@@ -4,9 +4,9 @@ Control for configuring multiple sensors with associated colors, typically for c
 
 ## Attributes
 
-| Attribute      | Type     | Description                       |
-| -------------- | -------- | --------------------------------- |
-| `data-default` | `string` | Default sensor ID for new entries |
+| Attribute       | Type      | Description                        | Support JS expressions  |
+| --------------- | --------- | ---------------------------------- | ----------------------- |
+| `data-default`  | `string`  | Default sensor ID for new entries  | ✅                     |
 
 ## Output Value
 
@@ -178,4 +178,4 @@ HTML:
 
 For the example to work, you also need to add icon.svg
 
-`IcueWidgetApiWrapper` and `SimpleSensorApiWrapper` are bundled with iCUE under `<<iCUE install dir>>/widgets/common/plugins/`.
+Copy `common/plugins/` from the documentation bundle into your widget folder, then include wrapper files with `<script src>` as shown above.

@@ -488,8 +488,11 @@ During requirements gathering, ask these after the core widget questions:
 > - **Color Utilities** — Do you need `rgba()` transparency from user-picked hex colors? *(adds ColorTools / hexToRGB)*
 >
 > **Plugins** (require iCUE plugin registration):
-> - **Sensor Data** — Should the widget display hardware sensor values (CPU/GPU temp, fan speed, RAM, FPS, etc.)? *(adds SimpleSensorApiWrapper — FPS is a sensor type, no separate plugin needed)*
+> - **Sensor Data** — Should the widget display hardware sensor values (CPU/GPU temp, fan speed, RAM, etc.)? *(adds Sensors plugin + SimpleSensorApiWrapper)*
+> - **FPS Data** — Should the widget display current FPS, FPS availability, or active process name? *(adds FPS plugin + SimpleFpsApiWrapper)*
 > - **Now Playing** — Should the widget show the currently playing song/artist? *(adds SimpleMediaApiWrapper)*
 > - **Open Links in Browser** — Does the widget have any clickable links that should open in the system browser rather than inside the widget? *(adds LinkProvider)*
+> - **Stream Deck** — Should the widget create or update a virtual Stream Deck device? *(adds StreamDeck plugin)*
+> - **Device Actions** — Should the widget react to physical dial/key events from the device? *(adds DeviceAction plugin and uses `device.deviceId`)*
 
 When the user confirms a tool or plugin, include its inline code block in `<head>` of the generated `index.html` and add any required `required_plugins` entries to `manifest.json`.

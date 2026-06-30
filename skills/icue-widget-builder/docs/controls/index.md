@@ -1,4 +1,6 @@
+
 # Widget Controls
+
 
 Widget controls are meta parameters that enable users to customize widget behavior and appearance through the iCUE settings panel. Each control is defined as a `<meta>` tag in the widget's HTML and becomes a global JavaScript variable accessible in your widget code.
 
@@ -21,12 +23,12 @@ document.body.style.color = textColor;
 
 Every control must include these attributes:
 
-| Attribute    | Description                                                                                   | Example             |
-| ------------ | --------------------------------------------------------------------------------------------- | ------------------- |
-| `name`       | Must always be `"x-icue-property"` (constant value)                                           | `"x-icue-property"` |
-| `content`    | JavaScript variable name. Must be unique and use only alphanumeric characters and underscores | `"fontSize"`        |
-| `data-label` | User-facing label shown in iCUE settings panel                                                | `"Font Size"`       |
-| `data-type`  | Control type (see [Available Control Types](#available-control-types))                        | `"slider"`          |
+| Attribute    | Description                                                                                   | Example             | Support JS expressions  |
+| ------------ | --------------------------------------------------------------------------------------------- | ------------------- | ----------------------- |
+| `name`       | Must always be `"x-icue-property"` (constant value)                                           | `"x-icue-property"` | ❌                      |
+| `content`    | JavaScript variable name. Must be unique and use only alphanumeric characters and underscores | `"fontSize"`        | ❌                      |
+| `data-label` | User-facing label shown in iCUE settings panel                                                | `"Font Size"`       | ✅                     |
+| `data-type`  | Control type (see [Available Control Types](#available-control-types))                        | `"slider"`          | ❌                      |
 
 :::tip Variable Naming
 The `content` attribute defines the JavaScript variable name. Use descriptive camelCase names like `textColor`, `fontSize`, or `showIcon`.
@@ -34,11 +36,11 @@ The `content` attribute defines the JavaScript variable name. Use descriptive ca
 
 ## Dynamic Values with JavaScript Expressions
 
-All `data-*` attributes (except `data-type`) support [JavaScript expressions](../javascript-expressions.mdx) for dynamic behavior. You can use:
+All `data-*` attributes (except `data-type`) support [JavaScript expressions](../javascript-expressions.md) for dynamic behavior. You can use:
 
 - **Standard JavaScript** – `Math`, `String`, `Array`, `Date`, etc.
-- **iCUE Global Object** – System information via [`iCUE` object](../icue-global-object.mdx)
-- **Plugin Data** – Sensor values, media info, etc. via [plugins](../plugins/index.mdx)
+- **iCUE Global Object** – System information via [`iCUE` object](../icue-global-object.md)
+- **Plugin Data** – Sensor values, media info, etc. via [plugins](../plugins/index.md)
 
 **Example: Dynamic default based on system locale**
 
@@ -98,7 +100,7 @@ All `data-*` attributes (except `data-type`) support [JavaScript expressions](..
 ## How Controls Work
 
 1. **Definition** – Controls are defined as `<meta>` tags in your widget's `<head>` section
-2. **Organization** – Group related controls using [property groups](../../specification.mdx#property-groups)
+2. **Organization** – Group related controls using [property groups](../../specification.md#property-groups)
 3. **Injection** – iCUE automatically creates global JavaScript variables for each control
 4. **Updates** – When users change values, iCUE triggers the `onDataUpdated` event
 5. **Access** – Read current values directly from the global variables in your widget code
@@ -190,7 +192,7 @@ All `data-*` attributes (except `data-type`) support [JavaScript expressions](..
 
 ## Next Steps
 
-- Learn about [Property Groups](../../specification.mdx#property-groups) to organize controls in the settings panel
-- Explore [JavaScript Expressions](../javascript-expressions.mdx) for dynamic control behavior
-- Understand the [Event Lifecycle](../../specification.mdx#icue-events) to react to control changes
+- Learn about [Property Groups](../../specification.md#property-groups) to organize controls in the settings panel
+- Explore [JavaScript Expressions](../javascript-expressions.md) for dynamic control behavior
+- Understand the [Event Lifecycle](../../specification.md#icue-events) to react to control changes
 - Review individual control documentation for specific attributes and examples

@@ -4,11 +4,11 @@ Searchable dropdown with async search results.
 
 ## Attributes
 
-| Attribute          | Type       | Description                                      |
-| ------------------ | ---------- | ------------------------------------------------ |
-| `data-placeholder` | `string`   | Placeholder text shown in the search field       |
-| `data-values`      | `function` | Search function that receives the current query  |
-| `data-default`     | `function` | Function that returns the default selected value |
+|  Attribute           |  Type        |  Description                                        |  Support JS expressions  |
+| -------------------- | ------------ | --------------------------------------------------- | ------------------------ |
+|  `data-placeholder`  |  `string`    |  Placeholder text for search input                  |  ✅                     |
+|  `data-values`       |  `function`  |  Search function (receives query, returns results)  |  ✅                     |
+|  `data-default`      |  `function`  |  Function returning default value                   |  ✅                     |
 
 ## Output Value
 

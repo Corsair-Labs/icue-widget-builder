@@ -4,9 +4,9 @@ Text input field.
 
 ## Attributes
 
-| Attribute      | Type     | Description        |
-|----------------|----------|--------------------|
-| `data-default` | `string` | Initial text value |
+| Attribute       | Type      | Description         | Support JS expressions  |
+| --------------- | --------- | ------------------- | ----------------------- |
+| `data-default`  | `string`  | Initial text value  | ✅                     |
 
 ## Output Value
 

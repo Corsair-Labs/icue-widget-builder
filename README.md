@@ -22,7 +22,6 @@ To build and package widgets successfully, install the following:
 
 - **iCUE 5.44 or later** — required to run and test iCUE widgets.
 - **iCUE Widget CLI** — required to validate and package widgets into `.icuewidget` files for installation or distribution.
-- **A code editor** — any editor works, but a full code editor is recommended.
 - **A compatible CORSAIR device** — recommended for final device testing.
 
 Download iCUE and the iCUE Widget CLI from the official CORSAIR downloads page: <https://www.corsair.com/downloads>.
@@ -142,7 +141,3 @@ When updating the skill:
 1. Preserve the skill name `icue-widget-builder` in frontmatter so installed environments can detect it consistently.
 2. Keep bundled documentation close to the skill so agents do not rely on stale external knowledge.
 3. Update this README whenever the repository structure, install paths, or supported formats change.
-
-## License and ownership
-
-This repository is intended for internal iCUE widget-building workflows. Add project-specific license, contribution, and ownership details here before publishing publicly.

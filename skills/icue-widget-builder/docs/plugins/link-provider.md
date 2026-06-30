@@ -48,7 +48,8 @@ function openLink(url) {
     if (window.plugins && window.plugins.Linkprovider && pluginLinkprovider_initialized) {
         window.plugins.Linkprovider.open(url);
     } else {
-        console.error("Linkprovider plugin not available");
+        // Fallback for browser testing outside iCUE
+        window.open(url, '_blank');
     }
 }
 

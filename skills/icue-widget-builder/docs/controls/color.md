@@ -4,9 +4,9 @@ Color picker control.
 
 ## Attributes
 
-| Attribute      | Type     | Description              |
-|----------------|----------|--------------------------|
-| `data-default` | `string` | Initial color (hex)      |
+| Attribute       | Type      | Description          | Support JS expressions  |
+| --------------- | --------- | -------------------- | ----------------------- |
+| `data-default`  | `string`  | Initial color (hex)  | ✅                     |
 
 ## Output Value
 

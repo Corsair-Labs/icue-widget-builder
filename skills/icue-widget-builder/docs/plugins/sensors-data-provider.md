@@ -48,8 +48,6 @@ Gets current sensor value.
 
 **Response**: `string`
 
----
-
 ### `getSensorUnits(requestId, sensorId)`
 
 Gets units of measurement.
@@ -60,8 +58,6 @@ Gets units of measurement.
 | `sensorId`  | `string` | Sensor identifier |
 
 **Response**: `string` (e.g., "C", "%", "RPM")
-
----
 
 ### `getSensorName(requestId, sensorId)`
 
@@ -74,8 +70,6 @@ Gets sensor display name.
 
 **Response**: `string`
 
----
-
 ### `getSensorDeviceName(requestId, sensorId)`
 
 Gets device name containing the sensor.
@@ -86,8 +80,6 @@ Gets device name containing the sensor.
 | `sensorId`  | `string` | Sensor identifier |
 
 **Response**: `string`
-
----
 
 ### `getSensorType(requestId, sensorId)`
 
@@ -100,8 +92,6 @@ Gets sensor type.
 
 **Response**: `string` - See [sensor types](#sensor-types)
 
----
-
 ### `getSensorKind(requestId, sensorId)`
 
 Gets sensor kind/category.
@@ -113,8 +103,6 @@ Gets sensor kind/category.
 
 **Response**: `string` - See [sensor kind](#sensor-kind)
 
----
-
 ### `getAllSensorIds(requestId)`
 
 Gets all available sensor identifiers.
@@ -124,8 +112,6 @@ Gets all available sensor identifiers.
 | `requestId` | `int` | Request ID  |
 
 **Response**: `string[]`
-
----
 
 ### `sensorIsConnected(requestId, sensorId)`
 
@@ -138,30 +124,39 @@ Checks sensor availability.
 
 **Response**: `bool`
 
+### `getDefaultSensorId(requestId, sensorType, preferredSensorKind)`
+
+Gets default sensor ID for a given type with an optional preferred kind hint.
+
+The lookup follows this priority order:
+1. First sensor matching both `sensorType` and `preferredSensorKind`
+2. First sensor matching `sensorType` only (if no kind match found)
+3. First available sensor of any type (if no type match found)
+
+If `preferredSensorKind` is an empty string, the kind is not used as a filter and the first sensor matching `sensorType` is returned.
+
+| Parameter             | Type     | Description                                                 |
+| --------------------- | -------- | ----------------------------------------------------------- |
+| `requestId`           | `int`    | Request ID                                                  |
+| `sensorType`          | `string` | Sensor type (see [sensor types](#sensor-types))             |
+| `preferredSensorKind` | `string` | Preferred sensor kind (see [sensor kind](#sensor-kind)). Pass `""` to match any kind. |
+
+**Response**: `string` - Sensor ID, or empty string if no sensors are available
+
 ---
 
-### `getDefaultSensorId(requestId, sensorType)`
+### `getDefaultSensorIdBlock(sensorType, preferredSensorKind)`
 
-Gets default sensor ID for a type.
+Synchronously gets default sensor ID for a given type with an optional preferred kind hint. **Blocking call.**
 
-| Parameter    | Type     | Description                                     |
-| ------------ | -------- | ----------------------------------------------- |
-| `requestId`  | `int`    | Request ID                                      |
-| `sensorType` | `string` | Sensor type (see [sensor types](#sensor-types)) |
+Applies the same lookup priority as `getDefaultSensorId`.
 
-**Response**: `string` - Default sensor ID (may vary between systems and iCUE versions)
+| Parameter             | Type     | Description                                                 |
+| --------------------- | -------- | ----------------------------------------------------------- |
+| `sensorType`          | `string` | Sensor type (see [sensor types](#sensor-types))             |
+| `preferredSensorKind` | `string` | Preferred sensor kind (see [sensor kind](#sensor-kind)). Pass `""` to match any kind. |
 
----
-
-### `getDefaultSensorIdBlock(sensorType)`
-
-Synchronously gets default sensor ID. **Blocking call.**
-
-| Parameter    | Type     | Description                                     |
-| ------------ | -------- | ----------------------------------------------- |
-| `sensorType` | `string` | Sensor type (see [sensor types](#sensor-types)) |
-
-**Returns**: `string` - Default sensor ID (may vary between systems and iCUE versions)
+**Returns**: `string` - Sensor ID, or empty string if no sensors are available
 
 ## Signals
 
@@ -174,8 +169,6 @@ Emitted when async method completes.
 | `requestId` | `int` | Original request ID |
 | `value`     | `var` | Response value      |
 
----
-
 ### `sensorAdded(sensorId)`
 
 Emitted when new sensor becomes available.
@@ -183,8 +176,6 @@ Emitted when new sensor becomes available.
 | Parameter  | Type     | Description     |
 | ---------- | -------- | --------------- |
 | `sensorId` | `string` | Added sensor ID |
-
----
 
 ### `sensorRemoved(sensorId)`
 
@@ -194,8 +185,6 @@ Emitted when sensor is no longer available.
 | ---------- | -------- | ----------------- |
 | `sensorId` | `string` | Removed sensor ID |
 
----
-
 ### `sensorDataChanged(sensorId)`
 
 Emitted when sensor data changes.
@@ -203,8 +192,6 @@ Emitted when sensor data changes.
 | Parameter  | Type     | Description       |
 | ---------- | -------- | ----------------- |
 | `sensorId` | `string` | Changed sensor ID |
-
----
 
 ### `sensorValueChanged(sensorId, value)`
 
@@ -214,8 +201,6 @@ Emitted when sensor value changes.
 | ---------- | -------- | ---------------- |
 | `sensorId` | `string` | Sensor ID        |
 | `value`    | `string` | New sensor value |
-
----
 
 ### `sensorUnitsChanged(sensorId, units)`
 
@@ -228,9 +213,13 @@ Emitted when sensor units change (e.g., Celsius to Fahrenheit).
 
 ## SimpleSensorApiWrapper
 
-Promise-based wrapper for the Sensors plugin.
+Promise-based wrapper for the Sensors plugin. Converts the callback-based Qt async API into Promises.
 
-**Location**: `<<iCUE install dir>>/widgets/common/plugins/SimpleSensorApiWrapper.js`
+### Important: Use Local Wrapper Files
+
+Copy `common/plugins/` from the documentation bundle into your widget folder and include wrappers via local `<script src>` paths.
+
+Do not reference iCUE installation paths (for example `../common/plugins/...`) in third-party widgets.
 
 ### Initialization
 
@@ -238,23 +227,31 @@ Promise-based wrapper for the Sensors plugin.
 const api = new SimpleSensorApiWrapper(sensorsplugin);
 ```
 
-| Parameter      | Type     | Default | Description     |
-| -------------- | -------- | ------- | --------------- |
-| `sensorPlugin` | `object` | -       | Plugin instance |
-| `timeoutMs`    | `number` | `5000`  | Timeout (ms)    |
+| Parameter       | Type      | Default  | Description                                             |
+| --------------- | --------- | -------- | ------------------------------------------------------- |
+| `plugin`        | `object`  | -        | Plugin instance (`window.plugins.Sensorsdataprovider`)  |
+| `timeoutMs`     | `number`  | `5000`   | Request timeout (ms)                                    |
 
 ### Methods
 
 All methods return a `Promise`.
 
--   `getSensorValue(sensorId)` - Returns sensor value
--   `getSensorUnits(sensorId)` - Returns measurement units
--   `getSensorName(sensorId)` - Returns sensor name
--   `getSensorDeviceName(sensorId)` - Returns device name
--   `getSensorType(sensorId)` - Returns sensor type
--   `getSensorKind(sensorId)` - Returns sensor kind
--   `getAllSensorIds()` - Returns all sensor IDs
--   `sensorIsConnected(sensorId)` - Returns connection status
+| Method                           | Returns              | Description                          |
+| -------------------------------- | -------------------- | ------------------------------------ |
+| `getSensorValue(sensorId)`       | `Promise<string>`    | Current sensor reading               |
+| `getSensorUnits(sensorId)`       | `Promise<string>`    | Units string (e.g. `"°C"`, `"RPM"`)  |
+| `getSensorName(sensorId)`        | `Promise<string>`    | Human-readable sensor name           |
+| `getSensorDeviceName(sensorId)`  | `Promise<string>`    | Device the sensor belongs to         |
+| `getSensorType(sensorId)`        | `Promise<string>`    | Sensor type identifier               |
+| `getSensorKind(sensorId)`        | `Promise<string>`    | Sensor kind                          |
+| `getAllSensorIds()`              | `Promise<string[]>`  | All available sensor IDs             |
+| `sensorIsConnected(sensorId)`    | `Promise<boolean>`   | Whether sensor is active             |
+
+### Required local files
+
+```html
+<script src="common/plugins/IcueWidgetApiWrapper.js"></script>
+<script src="common/plugins/SimpleSensorApiWrapper.js"></script>
 
 ### Example
 
@@ -269,8 +266,7 @@ All methods return a `Promise`.
 `index.html`
 
 ```javascript
-// <script src="common/plugins/IcueWidgetApiWrapper.js"></script>
-// <script src="common/plugins/SimpleSensorApiWrapper.js"></script>
+// After including IcueWidgetApiWrapper and SimpleSensorApiWrapper in <head>:
 const sensorApi = new SimpleSensorApiWrapper(window.plugins.Sensorsdataprovider);
 
 async function displayAllSensors() {
@@ -286,8 +282,6 @@ async function displayAllSensors() {
 }
 displayAllSensors();
 ```
-
-`IcueWidgetApiWrapper` and `SimpleSensorApiWrapper` are available in the `common` folder of the iCUE installation directory.
 
 ## Appendixes
 

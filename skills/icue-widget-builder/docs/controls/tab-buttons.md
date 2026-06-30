@@ -4,10 +4,10 @@ Tab-style button group for selecting one option.
 
 ## Attributes
 
-| Attribute      | Type                                | Description          |
-|----------------|-------------------------------------|----------------------|
-| `data-default` | `string`                            | Initial selected key |
-| `data-values`  | `string[]` \| `array<{key, value}>` | Available options    |
+| Attribute       | Type                                 | Description           | Support JS expressions  |
+| --------------- | ------------------------------------ | --------------------- | ----------------------- |
+| `data-default`  | `string`                             | Initial selected key  | ✅                     |
+| `data-values`   | `string[]` \| `array<{key, value}>`  | Available options     | ✅                     |
 
 ## Output Value
 

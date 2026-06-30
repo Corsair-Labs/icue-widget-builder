@@ -60,8 +60,6 @@ MyWidget/
 
 **Note:** `en` is required and is used as the fallback language for missing translations.
 
----
-
 ## Using Translations
 
 ### In Meta Parameters
@@ -118,8 +116,6 @@ async function initTranslations() {
     document.getElementById("saveBtn").textContent = save;
 }
 ```
-
----
 
 ## Complete Example
 

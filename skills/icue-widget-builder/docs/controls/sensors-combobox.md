@@ -4,9 +4,9 @@ Dropdown for selecting a system sensor. Requires the [Sensors plugin](../plugins
 
 ## Attributes
 
-| Attribute      | Type     | Description       |
-| -------------- | -------- | ----------------- |
-| `data-default` | `string` | Default sensor ID |
+| Attribute       | Type      | Description        | Support JS expressions  |
+| --------------- | --------- | ------------------ | ----------------------- |
+| `data-default`  | `string`  | Default sensor ID  | ✅                     |
 
 ## Output Value
 

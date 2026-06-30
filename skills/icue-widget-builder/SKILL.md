@@ -1,6 +1,6 @@
 ---
 name: icue-widget-builder
-description: Builds iCUE HTML widgets for CORSAIR device screens using bundled technical references as the source of truth. Use this whenever the user asks to create, modify, debug, review, validate, or package an iCUE widget for Xeneon Edge, Pump LCD, or keyboard LCD.
+description: Builds iCUE HTML widgets for CORSAIR device screens using the bundled documentation as the source of truth. Use this whenever the user asks to create, modify, debug, review, validate, or package an iCUE widget for Xeneon Edge, Pump LCD, or keyboard LCD.
 ---
 
 # Skill: iCUE Widget Builder
@@ -11,23 +11,26 @@ When the user asks to create an iCUE widget, follow this workflow.
 
 ## Documentation Authority
 
-Treat the technical documentation and files in `/docs` and `references/` as the source of truth for:
+Treat the technical documentation in `docs/` as the primary source of truth, and use `references/` for implementation templates, checklists, and skill-specific workflow guidance.
+
+Use `docs/` first for:
 
 - `manifest.json` requirements
 - widget/meta tags
 - property types and attributes
 - plugin usage
+- iCUE globals (`iCUE`, `device`, `iCUE_initialized`)
 - packaging layout
 - translation behavior
 - general guidelines
 
-If older skill guidance conflicts with the docs or local references, follow the docs/references.
+If older skill guidance, templates, or local references conflict with the updated docs, follow `docs/`.
 
 Do not invent unsupported meta properties, undocumented package layouts, or internal installation-path assumptions.
 
 Before relying on the Widget Builder CLI, verify whether `icuewidget` is actually installed. When shell access is available, check with `icuewidget --version` (or `which icuewidget` as a fallback). If the command is missing or fails, tell the user the CLI does not appear to be installed yet and prompt them to install it before you suggest CLI-based steps.
 
-If the local `icuewidget` CLI is available, prefer using it for `initiate`, `validate`, and `package` workflows. If it is not available, explain the equivalent manual structure and clearly label the CLI steps as optional until installation is complete.
+If the local `icuewidget` CLI is available, prefer using it for `init`, `validate`, and `package` workflows. If it is not available, explain the equivalent manual structure and clearly label the CLI steps as optional until installation is complete.
 
 ## Phase 1: Requirements Gathering (MANDATORY — do NOT skip)
 
@@ -46,12 +49,15 @@ For a **new widget** or a **major redesign**, ask about ALL of the following:
    - Scrolling text ticker? → TickerTracker
    - Locale-aware date formatting? → DateFormatter
    - rgba() from hex color picks? → ColorTools / hexToRGB
-   - Hardware sensor values (CPU/GPU/RAM/FPS/etc.)? → SimpleSensorApiWrapper (FPS is a sensor type, no separate plugin)
+   - Hardware sensor values (CPU/GPU/RAM/etc.)? → Sensors plugin + SimpleSensorApiWrapper
+   - Current FPS, FPS availability, or active process name? → FPS plugin + SimpleFpsApiWrapper
    - Now-playing song/artist? → SimpleMediaApiWrapper
    - Links that open in the system browser (not inside the widget)? → LinkProvider
+   - Stream Deck virtual-device integration? → StreamDeck plugin
+   - Dial/key action events from the physical device? → DeviceAction plugin + `device.deviceId`
 8. **Other setup dependencies** — API keys, account login, local media assets, or other setup?
-8. **Failure behavior** — What should users see in loading, empty, offline, and error states?
-9. **Documentation output** — Should the final deliverable include setup notes, compatibility notes, or Marketplace-facing disclosures?
+9. **Failure behavior** — What should users see in loading, empty, offline, and error states?
+10. **Documentation output** — Should the final deliverable include setup notes, compatibility notes, or Marketplace-facing disclosures?
 
 **Do not proceed to Phase 2 until the user has answered these questions.** If the reply is vague or incomplete, ask follow-up questions until you have enough detail to design the widget confidently.
 
@@ -77,6 +83,21 @@ Read only what you need for the current widget:
 
 | File | Read when... |
 |------|-------------|
+| `docs/index.md` | Starting from the official widget overview, CLI flow, or first-widget example |
+| `docs/specification.md` | Checking required files, `manifest.json` schema, supported devices, events, globals, and plugin declaration syntax |
+| `docs/icue-global-object.md` | Using `iCUE.iCUELanguage`, `iCUE.fpsLimit`, `iCUE.isPreview`, or `iCUE.defaultTemperatureUnit()` |
+| `docs/device-object.md` | Using the injected `device.deviceId` global, especially for DeviceAction setup |
+| `docs/controls/index.md` and `docs/controls/*.md` | Choosing official control types and attributes |
+| `docs/plugins/index.md` and `docs/plugins/*.md` | Declaring and integrating Sensors, Media, Link, StreamDeck, FPS, and DeviceAction plugins |
+| `docs/common-tools.md` | Using bundled common tools and wrappers from local `common/` paths |
+| `docs/local-storage.md` | Persisting widget-specific data with `localStorage` keyed by `uniqueId` |
+| `docs/translations.md` | Official translation JSON behavior and `tr()` usage |
+| `docs/javascript-expressions.md` | Dynamic defaults, values, and module-backed controls |
+
+Skill-specific implementation references:
+
+| File | Read when... |
+|------|-------------|
 | `references/widget-creation.md` | First time building a widget; package structure, manifest shape, and basic workflow |
 | `references/widget-meta-parameters.md` | Choosing property types, settings panel structure, device restrictions, sensor properties, personalization |
 | `references/javascript-expressions.md` | Widget needs dynamic defaults, computed values, or module integration |
@@ -86,7 +107,7 @@ Read only what you need for the current widget:
 | `references/lifecycle-and-plugins.md` | Handling iCUE initialization, property access, plugin naming, translation runtime wiring |
 | `references/translations.md` | Using `tr()` correctly and generating translation JSON |
 | `references/media-backgrounds.md` | Implementing `media-selector`, media backgrounds, blur/brightness, and fallback behavior |
-| `references/common-tools.md` | All available iCUE tools (MediaViewer, ColorTools, DateFormatter, TickerTracker) and plugin wrappers (Sensors, FPS, Media, Notifications) — includes full inline code blocks to paste into widgets |
+| `references/common-tools.md` | Skill-specific snippets for iCUE tools and plugin wrappers; verify details against `docs/common-tools.md` and `docs/plugins/*.md` |
 | `references/security-and-testing-checklists.md` | Running the preflight, security, accessibility, and browser-test checklist |
 
 ### 2.2 Device Specifications
@@ -238,7 +259,7 @@ Packaging safeguards:
 
 If the `icuewidget` CLI is available, prefer:
 
-- `icuewidget initiate`
+- `icuewidget init`
 - `icuewidget validate`
 - `icuewidget package`
 
@@ -277,12 +298,19 @@ Place the personalization group last in `x-icue-groups`.
 
 ### 3.4 Quick Reference — Commonly Overlooked Types and Features
 
+- Manifest plugin declarations use `namespace:Name:version` strings in `required_plugins`, for example `widgetbuilder.sensorsdataprovider:Sensors:1.0`.
+- Supported plugins in the updated docs: Sensors (`Sensors`), Media (`Media`), Link (`Url`), Stream Deck (`StreamDeck`), FPS (`Fps`), and Device Action (`DeviceAction`). Read `docs/plugins/index.md` and the specific plugin doc before using any plugin.
+- Runtime plugin objects live under `window.plugins` with provider-specific names, for example `window.plugins.Sensorsdataprovider`, `Mediadataprovider`, `Linkprovider`, `Streamdeck`, `Fpsdataprovider`, and `Deviceactionprovider`. Check the matching `plugin{Provider}_initialized` flag and `plugin{Provider}Events` map.
 - `sensors-combobox` — requires Sensors plugin (`widgetbuilder.sensorsdataprovider:Sensors:1.0` in `manifest.json`). Returns a sensor ID string. Use `SimpleSensorApiWrapper` to fetch sensor data asynchronously. Use `plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')` as `data-default` when appropriate.
 - `sensors-factory` — requires Sensors plugin. Returns a `[{sensorId, color}]` array for multi-sensor charts/graphs.
 - `search-combobox` — searchable dropdown backed by a module function. Use `data-values="Module.searchFn"` and `data-default="Module.getDefault"`.
 - `slider` supports `data-unit-label` (for example `data-unit-label="'%'"`) to show units next to the value.
 - `media-selector` — returns an object with `pathToAsset`, `baseWidth`, `baseHeight`, `scale`, `positionX`, `positionY`, and `angle`. Use the full media object, not just the file path. **Note:** iCUE sends `baseWidth`/`baseHeight` (confirmed from official Weather widget source and live testing). Always pass these to `loadMedia()` under the same names.
 - `combobox` and `tab-buttons` support key-value format: `[{"key":"left","value":tr('Left')}]`. The key is stored; the value is displayed.
+- `iCUE.isPreview` is `true` in preview/mimic mode and `false` on a real device. Use it only for preview-specific behavior, not as a substitute for responsive CSS.
+- The injected `device.deviceId` is available for device-specific plugin calls such as `DeviceActionprovider.initDevice(device.deviceId)`.
+- FPS data is provided by the FPS plugin (`widgetbuilder.fpsdataprovider:Fps:1.0`), not by the Sensors plugin. Use `SimpleFpsApiWrapper` for promise-based access when available.
+- Device Action events are real-device events and may not fire in preview mode. Always provide a non-interactive fallback state.
 
 ### 3.5 Media Background Notes
 
@@ -291,7 +319,7 @@ For any widget that supports `media-selector`, use `references/media-backgrounds
 That reference owns:
 
 - MediaViewer include/path guidance
-- full media object fields (`pathToAsset`, `baseSizeX`, `baseSizeY`, `scale`, `positionX`, `positionY`, `angle`)
+- full media object fields (`pathToAsset`, `baseWidth`, `baseHeight`, `scale`, `positionX`, `positionY`, `angle`)
 - normalization before `loadMedia()`
 - background layer model and optional `.main-glass` guidance
 
@@ -358,6 +386,8 @@ Pay special attention to:
 - correct device IDs and property types
 - valid grouping JSON
 - translation key coverage
+- correct `manifest.json` fields, including `min_app_version`, required OS declarations, `supported_devices`, and `required_plugins` where applicable
+- correct usage of `iCUE`, `device`, and plugin globals from the updated docs
 - accessibility and contrast
 - media background rules if `media-selector` is used
 - no unsafe or undisclosed outbound behavior

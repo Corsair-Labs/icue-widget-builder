@@ -206,8 +206,8 @@ if (typeof backgroundImage !== "undefined") {
     console.log(backgroundImage.scale);       // Scale factor
     console.log(backgroundImage.positionX);   // X position offset
     console.log(backgroundImage.positionY);   // Y position offset
-    console.log(backgroundImage.baseSizeX);     // Original image width
-    console.log(backgroundImage.baseSizeY);     // Original image height
+    console.log(backgroundImage.baseWidth);    // Original image width
+    console.log(backgroundImage.baseHeight);   // Original image height
     console.log(backgroundImage.angle);       // Rotation angle in degrees
 }
 ```

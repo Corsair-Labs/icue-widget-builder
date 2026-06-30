@@ -4,9 +4,9 @@ Boolean toggle switch.
 
 ## Attributes
 
-| Attribute      | Type      | Description                       |
-|----------------|-----------|-----------------------------------|
-| `data-default` | `boolean` | Initial state (`true` or `false`) |
+| Attribute       | Type       | Description                        | Support JS expressions  |
+| --------------- | ---------- | ---------------------------------- | ----------------------- |
+| `data-default`  | `boolean`  | Initial state (`true` or `false`)  | ✅                     |
 
 ## Output Value
 

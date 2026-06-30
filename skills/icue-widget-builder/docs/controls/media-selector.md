@@ -9,9 +9,9 @@ Media file selector with transformation controls (scale, position, rotation).
 
 ## Attributes
 
-| Attribute      | Type       | Description       |
-| -------------- | ---------- | ----------------- |
-| `data-filters` | `string[]` | File type filters |
+| Attribute      | Type        | Description                    | Support JS expressions  |
+| -------------- | ----------- | ------------------------------ | ----------------------- |
+| `data-filters` | `string[]`  | File type filters              | ✅                     |
 
 ## Output Value
 
@@ -23,8 +23,8 @@ Media file selector with transformation controls (scale, position, rotation).
 | `scale`       | `number` | Scale factor (1.0)        |
 | `positionX`   | `number` | X position offset         |
 | `positionY`   | `number` | Y position offset         |
-| `baseSizeX`   | `number` | Original image width      |
-| `baseSizeY`   | `number` | Original image height     |
+| `baseWidth`   | `number` | Original image width      |
+| `baseHeight`  | `number` | Original image height     |
 | `angle`       | `number` | Rotation angle in degrees |
 
 ## Example
@@ -49,10 +49,7 @@ if (typeof backgroundImage !== "undefined") {
 
 ## MediaViewer Helper
 
-See [MediaViewer documentation](../common-tools.mdx) for simplified media handling.
-It can be found in the iCUE files: `<<iCUE install dir>>/widgets/common`
-
-**Location:** `<<iCUE install dir>>/widgets/common`
+See [MediaViewer documentation](../common-tools.md) for simplified media handling.
 
 ## Complete Widget Example
 
@@ -93,57 +90,54 @@ Manifest:
 HTML:
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>'Media Selector Demo'</title>
-        <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
+<head>
+    <meta charset="UTF-8">
+    <title>'Media Selector Demo'</title>
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
 
-        <meta
-            name="x-icue-property"
-            content="backgroundImage"
-            data-label="'Background'"
-            data-type="media-selector"
-            data-filters="['*.png', '*.jpg', '*.gif']"
-        />
+    <meta name="x-icue-property" content="backgroundImage"
+          data-label="tr('Background Image')" data-type="media-selector"
+          data-filters="['*.png', '*.jpg', '*.gif']">
 
-        <script type="application/json" id="x-icue-groups">
-            [{ "title": "'Settings'", "properties": ["backgroundImage"] }]
-        </script>
+    <script type="application/json" id="x-icue-groups">
+    [{"title": "tr('Settings')", "properties": ["backgroundImage"]}]
+    </script>
 
-        <script src="common/tools/media_viewer/MediaViewer.js"></script>
-        <link rel="stylesheet" href="common/tools/media_viewer/MediaViewer.css" />
-    </head>
-    <body style="margin:0;height:100vh;background:#1a1a2e;color:#fff;font-family:sans-serif;">
-        <div id="media" style="position:absolute;width:100%;height:100%;"></div>
-        <div id="info" style="position:relative;z-index:1;padding:20px;">No media</div>
-        <script>
-            const viewer = new MediaViewer({ container: document.getElementById("media") });
-            icueEvents = { onDataUpdated: update, onICUEInitialized: update };
-            function update() {
-                if (typeof backgroundImage === "undefined") {
-                    viewer.clear();
-                    document.getElementById("info").textContent = "No media";
-                } else {
-                    viewer.loadMedia({
-                        path: backgroundImage.pathToAsset,
-                        baseSizeX: backgroundImage.baseSizeX,
-                        baseSizeY: backgroundImage.baseSizeY,
-                        scale: backgroundImage.scale,
-                        positionX: backgroundImage.positionX,
-                        positionY: backgroundImage.positionY,
-                        angle: backgroundImage.angle,
-                    });
-                    document.getElementById("info").textContent = "Scale: " + backgroundImage.scale.toFixed(1);
-                }
+    <!-- Bundle these files from docs/common into your widget folder -->
+    <link rel="stylesheet" href="common/tools/media_viewer/MediaViewer.css">
+    <script src="common/tools/media_viewer/MediaViewer.js"></script>
+</head>
+<body style="margin:0;height:100vh;background:#1a1a2e;color:#fff;font-family:sans-serif;">
+    <div id="media" style="position:relative;width:100%;height:100%;"></div>
+    <div id="info" style="position:relative;z-index:1;padding:20px;">No media</div>
+    <script>
+        const viewer = new MediaViewer({ container: document.getElementById("media") });
+        icueEvents = { "onDataUpdated": update, "onICUEInitialized": update };
+
+        function update() {
+            if (typeof backgroundImage === "undefined") {
+                viewer.clear();
+                document.getElementById("info").textContent = "No media";
+            } else {
+                viewer.loadMedia({
+                    path: backgroundImage.pathToAsset,
+                    baseWidth: backgroundImage.baseWidth,
+                    baseHeight: backgroundImage.baseHeight,
+                    scale: backgroundImage.scale,
+                    positionX: backgroundImage.positionX,
+                    positionY: backgroundImage.positionY,
+                    angle: backgroundImage.angle
+                });
             }
-            if (iCUE_initialized) update();
-        </script>
-    </body>
+        }
+        if (iCUE_initialized) update();
+    </script>
+</body>
 </html>
 ```
 
 For the example to work, you also need to add icon.svg
 
-`MediaViewer` is bundled with iCUE under `<<iCUE install dir>>/widgets/common/tools/media_viewer/`.
+Copy `common/tools/media_viewer/` from the documentation bundle into your widget folder, then include the files as shown above.

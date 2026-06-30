@@ -4,10 +4,10 @@ Dropdown selection control.
 
 ## Attributes
 
-| Attribute      | Type                                            | Description           |
-|----------------|-------------------------------------------------|-----------------------|
-| `data-default` | `string`                                        | Initial selected key  |
-| `data-values`  | `string[]` \| `object` \| `array<{key, value}>` | Available options     |
+| Attribute       | Type                                             | Description           | Support JS expressions  |
+| --------------- | ------------------------------------------------ | --------------------- | ----------------------- |
+| `data-default`  | `string`                                         | Initial selected key  | ✅                     |
+| `data-values`   | `string[]` \| `object` \| `array<{key, value}>`  | Available options     | ✅                     |
 
 ## Output Value
 

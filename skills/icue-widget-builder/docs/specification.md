@@ -1,4 +1,7 @@
+
 # iCUE Widget Specification
+
+<WidgetVersion showDetails />
 
 This document provides the technical specification for the iCUE Widgets, including the HTML widget structure, manifest schema, and iCUE communication protocol.
 
@@ -70,8 +73,9 @@ The `manifest.json` file defines widget metadata, system requirements, and marke
 | `os`                    | `object[]` | Yes      | Array of supported operating systems objects. Each object requires a `platform` property. At the moment only `windows` is supported. |
 | `supported_devices`     | `object[]` | Yes      | Array of supported device types (see [Device Support](#device-support))                                                              |
 | `interactive`           | `boolean`  | No       | Enable widget click handling on touch devices (default: `false`)                                                                     |
-| `required_plugins`      | `string[]` | No       | Array of required [plugins](./references/plugins/index.mdx) in `namespace:Name:version` format                                       |
-| `modules`               | `string[]` | No       | Array of JavaScript module paths (see [Module Integration](./references/javascript-expressions.mdx#module-integration))              |
+| `required_plugins`      | `string[]` | No       | Array of required [plugins](./references/plugins/index.md) in `namespace:Name:version` format                                       |
+| `modules`               | `string[]` | No       | Array of JavaScript module paths (see [Module Integration](./references/javascript-expressions.md#module-integration))              |
+| `min_app_version`       | `string`   | Yes      | Minimum recommended iCUE version (e.g., `5.47`)                                                                                      |
 
 ### Example Manifest
 
@@ -83,6 +87,7 @@ The `manifest.json` file defines widget metadata, system requirements, and marke
 	"description": "Display current weather and forecast",
 	"version": "1.0.0",
 	"preview_icon": "resources/icon.png",
+	"min_app_version": "5.46",
 	"min_framework_version": "1.0.0",
 	"os": [
 		{
@@ -193,7 +198,7 @@ Widget controls are user-configurable parameters defined as `<meta>` tags with `
 ```
 
 :::info
-For complete documentation on available control types, attributes, and examples, see [Widget Controls](./references/controls/index.mdx).
+For complete documentation on available control types, attributes, and examples, see [Widget Controls](./references/controls/index.md).
 :::
 
 ##### Property Groups
@@ -222,9 +227,9 @@ Property groups organize controls into panels in the iCUE. Groups are defined in
 
 | Property     | Type       | Required | Description                                                                                                                                             |
 | ------------ | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`      | `string`   | Yes      | Group heading displayed in settings panel. Supports [JavaScript expressions](./references/javascript-expressions.mdx) including `tr()` for translations |
+| `title`      | `string`   | Yes      | Group heading displayed in settings panel. Supports [JavaScript expressions](./references/javascript-expressions.md) including `tr()` for translations |
 | `properties` | `string[]` | Yes      | Array of meta parameters (`content` values) to include in this group                                                                                    |
-| `info`       | `string`   | No       | Optional help text displayed as tooltip. Supports [JavaScript expressions](./references/javascript-expressions.mdx) including `tr()`                    |
+| `info`       | `string`   | No       | Optional help text displayed as tooltip. Supports [JavaScript expressions](./references/javascript-expressions.md) including `tr()`                    |
 
 #### Device-Specific Behavior
 
@@ -239,9 +244,10 @@ This behavior is device-specific and only applies to XENEON EDGE.
 iCUE injects script blocks into the widget's HTML page at runtime. These scripts provide:
 
 - **Global variables** for each meta parameter (e.g., `textColor`, `fontSize`)
-- **`iCUE` global object** with utility functions (see [iCUE Global Object](./references/icue-global-object.mdx))
+- **`iCUE` global object** with utility functions (see [iCUE Global Object](./references/icue-global-object.md))
 - **`iCUE_initialized`** flag indicating API readiness
-- **Plugin objects** in `window.plugins` namespace [more info about plugins](./references/plugins/index.mdx)
+- **`device` object** with information about the device displaying the widget (see [Device Object](./references/device-object.md))
+- **Plugin objects** in `window.plugins` namespace [more info about plugins](./references/plugins/index.md)
 
 The injection occurs before the widget's own scripts execute, making all iCUE data immediately available.
 
@@ -270,10 +276,10 @@ if (iCUE_initialized) {
 }
 ```
 
-| Event               | Description                                      |
-| ------------------- | ------------------------------------------------ |
-| `onICUEInitialized` | Called once when iCUE API and all data are ready |
-| `onDataUpdated`     | Called when any meta parameter value changes     |
+| Event               | Description                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `onICUEInitialized` | Called once when iCUE API and all data are ready. The event comes once when iCUE is ready.       |
+| `onDataUpdated`     | Called when any meta parameter value changes. The event occurs every time any parameter changes. |
 
 ## Plugin Events
 
@@ -298,5 +304,5 @@ if (pluginSensorsdataprovider_initialized) {
 ```
 
 :::info
-For detailed plugin documentation, see [Plugins](./references/plugins/index.mdx).
+For detailed plugin documentation, see [Plugins](./references/plugins/index.md).
 :::

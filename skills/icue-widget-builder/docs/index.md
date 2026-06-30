@@ -1,4 +1,6 @@
+
 # Getting Started
+
 
 In this article you'll learn what is needed to create an iCUE widget, and how to create your first iCUE widget.
 
@@ -6,14 +8,14 @@ In this article you'll learn what is needed to create an iCUE widget, and how to
 
 Developing widgets for iCUE requires:
 
-- **iCUE 5.44** or later installed
+- **iCUE 5.47** or later installed
 - **Text editor**, or preferably a code editor
 - **iCUE Widget CLI** for packaging widgets
 - **Compatible CORSAIR device** for testing. See [Supported Devices](#supported-devices) for a list of supported devices.
 
 ## iCUE Widget CLI
 
-The iCUE Widget CLI is a command-line tool for creating, validating, and packaging iCUE widgets, and is the recommended way to develop for iCUE.
+The iCUE Widget CLI is the command-line tool for creating, validating, and packaging widgets before import into iCUE, and is the recommended way to develop for iCUE.
 
 The CLI provides three main commands:
 
@@ -36,6 +38,10 @@ If you have the iCUE Widget CLI installed, you can quickly scaffold a new widget
 ```bash
 icuewidget init MyWidget
 ```
+
+If you don’t have the CLI installed yet, follow the installation guide first:
+
+[Install the iCUE Widget CLI](https://www.corsair.com/us/en/s/downloads)
 
 The CLI will interactively prompt you for:
 
@@ -134,12 +140,25 @@ Create an `index.html` file with your widget's UI and logic:
 				onDataUpdated: update,
 			};
 
+			function getIcueProperty(name) {
+			if (typeof window !== "undefined" && Object.prototype.hasOwnProperty.call(window, name)) {
+				const value = window[name];
+				if (value !== undefined && value !== null && value !== "") return value;
+			}
+			try {
+				const value = Function('return typeof ' + name + ' !== "undefined" ? ' + name + ' : undefined')();
+				if (value !== undefined && value !== null && value !== "") return value;
+			} catch (e) {}
+				return undefined;
+			}
+
 			function init() {
 				update();
 			}
 
 			function update() {
-				document.getElementById("content").style.color = textColor;
+				const color = getIcueProperty("textColor") || "#FFFFFF";
+				document.getElementById("content").style.color = color;
 			}
 
 			if (iCUE_initialized) init();
@@ -148,7 +167,7 @@ Create an `index.html` file with your widget's UI and logic:
 </html>
 ```
 
-_For support `tr` function, add translation.json file to widget root directory. More info in [Translations](./references/translations.md)_
+_If your widget uses `tr()`, add a `translation.json` file in the widget root. More info in [Translations](./references/translations.md)_
 
 ## Packaging Your Widget
 
@@ -186,8 +205,9 @@ iCUE widgets can run on devices with LCD displays:
 
 ## What's Next?
 
-- Learn about the [Widget Specification](./specification.mdx) for building widgets
-- Explore [Controls](./references/controls/index.mdx) for creating interactive settings in the iCUE settings panel
-- Discover the [iCUE Global Object](./references/icue-global-object.mdx) for accessing device and system information
-- Use [Plugins](./references/plugins/index.mdx) to access system sensors, media playback, and more
+- Learn about the [Widget Specification](./specification.md) for building widgets
+- Explore [Controls](./references/controls/index.md) for creating interactive settings in the iCUE settings panel
+- Discover the [iCUE Global Object](./references/icue-global-object.md) for utility functions and system information
+- Access [Device Information](./references/device-object.md) to identify the device displaying your widget
+- Use [Plugins](./references/plugins/index.md) to access system sensors, media playback, and more
 - Add [Translations](./references/translations.md) to support multiple languages

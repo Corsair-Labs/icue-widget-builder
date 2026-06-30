@@ -1,4 +1,6 @@
+
 # Common Tools
+
 
 ## Overview
 
@@ -21,8 +23,6 @@ MyWidget/
 ```
 
 :::
-
----
 
 ## MediaViewer
 

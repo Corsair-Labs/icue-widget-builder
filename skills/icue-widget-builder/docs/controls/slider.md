@@ -4,13 +4,13 @@ Numeric slider control.
 
 ## Attributes
 
-| Attribute         | Type     | Description                 |
-|-------------------|----------|-----------------------------|
-| `data-default`    | `number` | Initial value               |
-| `data-min`        | `number` | Minimum value               |
-| `data-max`        | `number` | Maximum value               |
-| `data-step`       | `number` | Step increment              |
-| `data-unit-label` | `string` | Unit label (e.g., `"%"`)    |
+| Attribute          | Type      | Description                  | Support JS expressions  |
+| ------------------ | --------- | ---------------------------- | ----------------------- |
+| `data-default`     | `number`  | Initial value                | ✅                     |
+| `data-min`         | `number`  | Minimum value                | ✅                     |
+| `data-max`         | `number`  | Maximum value                | ✅                     |
+| `data-step`        | `number`  | Step increment               | ✅                     |
+| `data-unit-label`  | `string`  | Unit label (e.g., `"%"`)     | ✅                     |
 
 ## Output Value
 
