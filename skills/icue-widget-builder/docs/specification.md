@@ -123,11 +123,11 @@ The `supported_devices` array specifies compatible device types and optional fea
 
 #### Device Types
 
-| Type            | Description                           | Examples                     |
-| --------------- | ------------------------------------- | ---------------------------- |
-| `dashboard_lcd` | Dashboard displays                    | XENEON EDGE                  |
-| `keyboard_lcd`  | Keyboards with integrated LCD screens | VANGUARD 96, VANGUARD PRO 96 |
-| `pump_lcd`      | AIO cooler pumps with LCD screens     | iCUE LINK XC7/XD5 ELITE LCD  |
+| Type            | Description                           | Examples                                                                        |
+| --------------- | ------------------------------------- | ------------------------------------------------------------------------------- |
+| `dashboard_lcd` | Dashboard displays                    | XENEON EDGE                                                                     |
+| `keyboard_lcd`  | Keyboards with integrated LCD screens | VANGUARD 96, VANGUARD PRO 96                                                    |
+| `pump_lcd`      | AIO cooler pumps with LCD screens     | iCUE LINK XC7/XD5 ELITE LCD, Nautilus II 240/360 RS LCD, iCUE LINK 5 Inch LCD Module |
 
 #### Device Features
 

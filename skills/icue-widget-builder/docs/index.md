@@ -197,11 +197,11 @@ To install your widget in iCUE:
 
 iCUE widgets can run on devices with LCD displays:
 
-| Device Type     | Examples                                         |
-| --------------- | ------------------------------------------------ |
-| `dashboard_lcd` | XENEON EDGE                                      |
-| `keyboard_lcd`  | VANGUARD 96, VANGUARD PRO 96                     |
-| `pump_lcd`      | iCUE LINK XC7 ELITE LCD, iCUE LINK XD5 ELITE LCD |
+| Device Type     | Examples                                                                                      |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| `dashboard_lcd` | XENEON EDGE                                                                                   |
+| `keyboard_lcd`  | VANGUARD 96, VANGUARD PRO 96                                                                  |
+| `pump_lcd`      | iCUE LINK XC7 ELITE LCD, iCUE LINK XD5 ELITE LCD, Nautilus II 240/360 RS LCD, iCUE LINK 5 Inch LCD Module |
 
 ## What's Next?
 
