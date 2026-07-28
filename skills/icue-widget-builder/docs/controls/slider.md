@@ -26,7 +26,7 @@ Numeric slider control.
       data-min="0"
       data-max="100"
       data-step="1"
-      data-unit-label="'%'">
+      data-unit-label="'%'" />
 ```
 
 ## Usage in JavaScript
@@ -78,13 +78,13 @@ HTML:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>'Slider Demo'</title>
-    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
 
     <meta name="x-icue-property" content="opacity"
           data-label="'Opacity'" data-type="slider"
-          data-default="100" data-min="0" data-max="100" data-step="1" data-unit-label="'%'">
+          data-default="100" data-min="0" data-max="100" data-step="1" data-unit-label="'%'" />
 
     <script type="application/json" id="x-icue-groups">
     [{"title": "'Settings'", "properties": ["opacity"]}]

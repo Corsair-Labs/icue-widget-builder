@@ -18,7 +18,7 @@ Boolean toggle switch.
 <meta name="x-icue-property" content="showLabel"
       data-label="tr('Show Label')"
       data-type="switch"
-      data-default="true">
+      data-default="true" />
 ```
 
 ## Usage in JavaScript
@@ -70,12 +70,12 @@ HTML:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>'Switch Demo'</title>
-    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
 
     <meta name="x-icue-property" content="showLabel"
-          data-label="'Show Label'" data-type="switch" data-default="true">
+          data-label="'Show Label'" data-type="switch" data-default="true" />
 
     <script type="application/json" id="x-icue-groups">
     [{"title": "'Settings'", "properties": ["showLabel"]}]

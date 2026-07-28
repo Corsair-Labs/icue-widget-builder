@@ -93,20 +93,20 @@ HTML:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>'Media Selector Demo'</title>
-    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
 
     <meta name="x-icue-property" content="backgroundImage"
           data-label="tr('Background Image')" data-type="media-selector"
-          data-filters="['*.png', '*.jpg', '*.gif']">
+          data-filters="['*.png', '*.jpg', '*.gif']" />
 
     <script type="application/json" id="x-icue-groups">
     [{"title": "tr('Settings')", "properties": ["backgroundImage"]}]
     </script>
 
     <!-- Bundle these files from docs/common into your widget folder -->
-    <link rel="stylesheet" href="common/tools/media_viewer/MediaViewer.css">
+    <link rel="stylesheet" href="common/tools/media_viewer/MediaViewer.css" />
     <script src="common/tools/media_viewer/MediaViewer.js"></script>
 </head>
 <body style="margin:0;height:100vh;background:#1a1a2e;color:#fff;font-family:sans-serif;">

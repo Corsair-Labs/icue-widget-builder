@@ -52,7 +52,7 @@ A numerical slider for selecting a value within a range.
       data-min="0"
       data-max="100"
       data-step="1"
-      data-unit-label="'%'">
+      data-unit-label="'%'" />
 ```
 
 ```javascript
@@ -72,12 +72,12 @@ A set of buttons displayed as tabs for switching between options or modes. Suppo
 ```html
 <!-- Simple array -->
 <meta name="x-icue-property" content="direction" data-label="tr('Direction')" data-type="tab-buttons"
-      data-values="['Left', 'Right', 'Up', 'Down']" data-default="'Right'">
+      data-values="['Left', 'Right', 'Up', 'Down']" data-default="'Right'" />
 
 <!-- Key-value pairs (key is stored, value is displayed) -->
 <meta name="x-icue-property" content="alignment" data-label="tr('Alignment')" data-type="tab-buttons"
       data-default="'center'"
-      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]">
+      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]" />
 ```
 
 ```javascript
@@ -97,12 +97,12 @@ A drop-down menu for selecting one option from a predefined list. Supports simpl
 ```html
 <!-- Simple array -->
 <meta name="x-icue-property" content="fruit" data-label="tr('Fruit')" data-type="combobox"
-      data-default="'apple'" data-values="['apple', 'banana', 'orange']">
+      data-default="'apple'" data-values="['apple', 'banana', 'orange']" />
 
 <!-- Key-value pairs -->
 <meta name="x-icue-property" content="position" data-label="tr('Position')" data-type="combobox"
       data-default="'left'"
-      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]">
+      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]" />
 ```
 
 ```javascript
@@ -132,7 +132,7 @@ Declare the search module in `manifest.json`:
       data-type="search-combobox"
       data-values="CitySearch.search"
       data-default="CitySearch.getDefault"
-      data-placeholder="tr('Search city...')">
+      data-placeholder="tr('Search city...')" />
 ```
 
 ```javascript
@@ -146,7 +146,7 @@ console.log(city); // selected value (e.g., a city ID)
 A toggle for binary on/off state.
 
 ```html
-<meta name="x-icue-property" content="showLabel" data-label="tr('Show Label')" data-type="switch" data-default="true">
+<meta name="x-icue-property" content="showLabel" data-label="tr('Show Label')" data-type="switch" data-default="true" />
 ```
 
 ```javascript
@@ -160,7 +160,7 @@ element.style.display = showLabel ? "block" : "none";
 A color picker using a color wheel or palette.
 
 ```html
-<meta name="x-icue-property" content="textColor" data-label="tr('Text Color')" data-type="color" data-default="'#ffffff'">
+<meta name="x-icue-property" content="textColor" data-label="tr('Text Color')" data-type="color" data-default="'#ffffff'" />
 ```
 
 ```javascript
@@ -174,7 +174,7 @@ element.style.color = textColor; // "#FFFFFF"
 A text input field for custom text.
 
 ```html
-<meta name="x-icue-property" content="message" data-label="tr('Message')" data-type="textfield" data-default="'My Custom Text'">
+<meta name="x-icue-property" content="message" data-label="tr('Message')" data-type="textfield" data-default="'My Custom Text'" />
 ```
 
 ---
@@ -195,7 +195,7 @@ Lets users select media files (images, videos) from their device. Returns an obj
 <meta name="x-icue-property" content="backgroundImage"
       data-label="tr('Background Image')"
       data-type="media-selector"
-      data-filters="['*.png', '*.jpg', '*.gif']">
+      data-filters="['*.png', '*.jpg', '*.gif']" />
 ```
 
 **Accessing the selected media data:**
@@ -231,7 +231,7 @@ Declare the plugin in `manifest.json`:
 <meta name="x-icue-property" content="sensorId"
       data-label="tr('Sensor')"
       data-type="sensors-combobox"
-      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')">
+      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')" />
 ```
 
 ```javascript
@@ -260,7 +260,7 @@ Declare the plugin in `manifest.json`:
 <meta name="x-icue-property" content="sensors"
       data-label="tr('Sensors')"
       data-type="sensors-factory"
-      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')">
+      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')" />
 ```
 
 ```javascript
@@ -278,9 +278,9 @@ sensors.forEach(item => {
 Group parameters into separate iCUE sidebar panels using a `<script>` tag inside `<head>`. JavaScript expressions are supported in `title` and `info` fields.
 
 ```html
-<meta name="x-icue-property" content="background" data-label="tr('Background')" data-type="color" data-default="'#3c4bff'">
-<meta name="x-icue-property" content="dataColor" data-label="tr('Data Color')" data-type="color" data-default="'#ffffff'">
-<meta name="x-icue-property" content="hoursFormat" data-label="tr('24-Hour Time')" data-type="switch" data-default="true">
+<meta name="x-icue-property" content="background" data-label="tr('Background')" data-type="color" data-default="'#3c4bff'" />
+<meta name="x-icue-property" content="dataColor" data-label="tr('Data Color')" data-type="color" data-default="'#ffffff'" />
+<meta name="x-icue-property" content="hoursFormat" data-label="tr('24-Hour Time')" data-type="switch" data-default="true" />
 
 <script id="x-icue-groups" type="application/json">
 [
@@ -318,8 +318,8 @@ Group parameters into separate iCUE sidebar panels using a `<script>` tag inside
 Group related widgets together in the iCUE widget picker:
 
 ```html
-<meta name="x-icue-widget-group" content="tr('Clock Face')">
-<meta name="x-icue-widget-preview" content="resources/MyWidgetPreview.png">
+<meta name="x-icue-widget-group" content="tr('Clock Face')" />
+<meta name="x-icue-widget-preview" content="resources/MyWidgetPreview.png" />
 ```
 
 - `x-icue-widget-group` — group name; all widgets sharing the same name are combined

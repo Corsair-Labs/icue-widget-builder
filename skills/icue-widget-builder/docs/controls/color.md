@@ -18,7 +18,7 @@ Color picker control.
 <meta name="x-icue-property" content="textColor"
       data-label="tr('Text Color')"
       data-type="color"
-      data-default="'#FFFFFF'">
+      data-default="'#FFFFFF'" />
 ```
 
 ## Usage in JavaScript
@@ -70,12 +70,12 @@ HTML:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>'Color Demo'</title>
-    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
 
     <meta name="x-icue-property" content="textColor"
-          data-label="'Text Color'" data-type="color" data-default="'#e94560'">
+          data-label="'Text Color'" data-type="color" data-default="'#e94560'" />
 
     <script type="application/json" id="x-icue-groups">
     [{"title": "'Settings'", "properties": ["textColor"]}]

@@ -16,10 +16,10 @@ ECMAScript expressions are supported in any `data-*` attribute except `data-type
 
 ```html
 <!-- Static value -->
-<meta name="x-icue-property" content="brightness" data-label="tr('Brightness')" data-type="slider" data-default="50" data-min="0" data-max="100" data-step="1">
+<meta name="x-icue-property" content="brightness" data-label="tr('Brightness')" data-type="slider" data-default="50" data-min="0" data-max="100" data-step="1" />
 
 <!-- Dynamic expression -->
-<meta name="x-icue-property" content="brightness" data-label="tr('Brightness')" data-type="slider" data-default="SystemUtils.getSystemVolume()" data-min="0" data-max="100" data-step="1">
+<meta name="x-icue-property" content="brightness" data-label="tr('Brightness')" data-type="slider" data-default="SystemUtils.getSystemVolume()" data-min="0" data-max="100" data-step="1" />
 ```
 
 ---
@@ -80,12 +80,12 @@ Once declared, exported functions are available via the module's filename (witho
       data-label="tr('Time Zone')"
       data-type="combobox"
       data-values="SystemUtils.getAvailableTimezones()"
-      data-default="SystemUtils.getCurrentTimezone()">
+      data-default="SystemUtils.getCurrentTimezone()" />
 
 <meta name="x-icue-property" content="nightMode"
       data-label="tr('Night Mode')"
       data-type="switch"
-      data-default="SystemUtils.isLowLightMode()">
+      data-default="SystemUtils.isLowLightMode()" />
 ```
 
 ### Module Requirements
@@ -118,7 +118,7 @@ Example using the Sensors Data Provider plugin:
       content="selectedSensorId"
       data-label="tr('Sensor')"
       data-type="sensors-combobox"
-      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')">
+      data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')" />
 ```
 
 `getDefaultSensorIdBlock()` is the synchronous (blocking) variant — it is safe to use in meta parameter expressions. The async `getDefaultSensorId(requestId, sensorType)` variant cannot be used here.

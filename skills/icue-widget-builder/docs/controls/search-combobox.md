@@ -32,7 +32,7 @@ HTML:
       data-type="search-combobox"
       data-values="CitySearch.search"
       data-default="CitySearch.getDefault"
-      data-placeholder="tr('Search city...')">
+      data-placeholder="tr('Search city...')" />
 ```
 
 ## Usage in JavaScript

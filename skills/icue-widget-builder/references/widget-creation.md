@@ -52,7 +52,7 @@ Minimal head section:
 ```html
 <head>
     <title>My Widget</title>
-    <link rel="icon" type="image/x-icon" href="resources/icon.png">
+    <link rel="icon" type="image/x-icon" href="resources/icon.png" />
 </head>
 ```
 
@@ -138,7 +138,7 @@ Customize widget appearance by interacting with controls provided via `<meta>` p
 
 ```html
 <head>
-  <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background')" data-type="color" data-default="'#3c4bff'">
+  <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background')" data-type="color" data-default="'#3c4bff'" />
   <style>
     .widget-background {
       width: 100%;
@@ -207,8 +207,8 @@ if (iCUE_initialized) {
 Group related widgets together in the iCUE widget picker using HTML meta tags:
 
 ```html
-<meta name="x-icue-widget-group" content="tr('Clock Face')">
-<meta name="x-icue-widget-preview" content="resources/MyWidgetPreview.png">
+<meta name="x-icue-widget-group" content="tr('Clock Face')" />
+<meta name="x-icue-widget-preview" content="resources/MyWidgetPreview.png" />
 ```
 
 - `x-icue-widget-group` — group name; all widgets sharing the same name are combined
@@ -245,12 +245,12 @@ Group related widgets together in the iCUE widget picker using HTML meta tags:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
   <title>tr('Sensor view')</title>
   <meta name="x-icue-property" content="sensorId" data-label="tr('Sensor')" data-type="sensors-combobox"
-        data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')">
+        data-default="plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')" />
   <style>
     body {
       background-color: #2B2B2B;

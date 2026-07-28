@@ -22,7 +22,7 @@ Dropdown selection control.
       data-label="tr('Fruit')"
       data-type="combobox"
       data-default="'apple'"
-      data-values="['apple', 'banana', 'orange']">
+      data-values="['apple', 'banana', 'orange']" />
 ```
 
 ### Key-value array format
@@ -32,7 +32,7 @@ Dropdown selection control.
       data-label="tr('Position')"
       data-type="combobox"
       data-default="'left'"
-      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]">
+      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]" />
 ```
 
 ## Usage in JavaScript
@@ -84,13 +84,13 @@ HTML:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>'Combobox Demo'</title>
-    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
 
     <meta name="x-icue-property" content="fruit"
           data-label="'Fruit'" data-type="combobox"
-          data-default="'apple'" data-values="['apple', 'banana', 'orange']">
+          data-default="'apple'" data-values="['apple', 'banana', 'orange']" />
 
     <script type="application/json" id="x-icue-groups">
     [{"title": "'Settings'", "properties": ["fruit"]}]

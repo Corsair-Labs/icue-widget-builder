@@ -20,7 +20,7 @@ Tab-style button group for selecting one option.
       data-label="tr('Alignment')"
       data-type="tab-buttons"
       data-default="'center'"
-      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]">
+      data-values="[{'key':'left','value':tr('Left')},{'key':'center','value':tr('Center')},{'key':'right','value':tr('Right')}]" />
 ```
 
 ## Usage in JavaScript
@@ -71,14 +71,14 @@ HTML:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>'Tab Buttons Demo'</title>
-    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
 
     <meta name="x-icue-property" content="alignment"
           data-label="'Alignment'" data-type="tab-buttons"
           data-default="'center'"
-          data-values="[{'key':'left','value':'Left'},{'key':'center','value':'Center'},{'key':'right','value':'Right'}]">
+          data-values="[{'key':'left','value':'Left'},{'key':'center','value':'Center'},{'key':'right','value':'Right'}]" />
 
     <script type="application/json" id="x-icue-groups">
     [{"title": "'Settings'", "properties": ["alignment"]}]

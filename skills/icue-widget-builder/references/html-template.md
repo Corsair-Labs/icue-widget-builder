@@ -2,6 +2,8 @@
 
 Use this as the starting point for every new iCUE widget. Adapt it to the specific widget requirements — don't copy it verbatim without adjusting to the use case.
 
+**Keep every void element in `<head>` self-closed (`<meta ... />`, `<link ... />`).** iCUE parses the head as XML on import; a non-self-closed `<meta>` or `<link>` makes the parser fail at `</head>` and iCUE rejects the widget with "Missing Title Element".
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -9,27 +11,27 @@ Use this as the starting point for every new iCUE widget. Adapt it to the specif
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tr('[Widget Name]')</title>
-  <link rel="icon" type="image/svg+xml" href="resources/[widgetname].svg">
+  <link rel="icon" type="image/svg+xml" href="resources/[widgetname].svg" />
 
   <!-- Device restrictions: JSON format only — see references/widget-meta-parameters.md -->
-  <meta name="x-icue-restrictions" data-restrictions='[{ "device": "dashboard_lcd" }]'>
+  <meta name="x-icue-restrictions" data-restrictions='[{ "device": "dashboard_lcd" }]' />
 
   <!-- Optional: x-icue-interactive | x-icue-widget-group | x-icue-widget-preview | x-icue-module -->
 
   <!-- MediaViewer for background image support -->
   <script type="text/javascript" src="../common/tools/media_viewer/MediaViewer.js"></script>
-  <link rel="stylesheet" type="text/css" href="../common/tools/media_viewer/MediaViewer.css">
+  <link rel="stylesheet" type="text/css" href="../common/tools/media_viewer/MediaViewer.css" />
 
   <!-- Feature Properties -->
   <!-- Add widget-specific properties here -->
 
   <!-- Widget Personalization (recommended — place as last group) -->
-  <meta name="x-icue-property" content="backgroundMedia" data-label="tr('Background Image')" data-type="media-selector" data-filters="['*.png','*.jpg','*.jpeg','*.webp']">
-  <meta name="x-icue-property" content="glassBlur" data-label="tr('Glass Blur')" data-type="slider" data-default="0" data-min="0" data-max="30" data-step="1">
-  <meta name="x-icue-property" content="textColor" data-label="tr('Text Color')" data-type="color" data-default="'#ffffff'">
-  <meta name="x-icue-property" content="accentColor" data-label="tr('Accent Color')" data-type="color" data-default="'#ffffff'">
-  <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background')" data-type="color" data-default="'#000000'">
-  <meta name="x-icue-property" content="transparency" data-label="tr('Transparency')" data-type="slider" data-default="100" data-min="0" data-max="100" data-step="1">
+  <meta name="x-icue-property" content="backgroundMedia" data-label="tr('Background Image')" data-type="media-selector" data-filters="['*.png','*.jpg','*.jpeg','*.webp']" />
+  <meta name="x-icue-property" content="glassBlur" data-label="tr('Glass Blur')" data-type="slider" data-default="0" data-min="0" data-max="30" data-step="1" />
+  <meta name="x-icue-property" content="textColor" data-label="tr('Text Color')" data-type="color" data-default="'#ffffff'" />
+  <meta name="x-icue-property" content="accentColor" data-label="tr('Accent Color')" data-type="color" data-default="'#ffffff'" />
+  <meta name="x-icue-property" content="backgroundColor" data-label="tr('Background')" data-type="color" data-default="'#000000'" />
+  <meta name="x-icue-property" content="transparency" data-label="tr('Transparency')" data-type="slider" data-default="100" data-min="0" data-max="100" data-step="1" />
 
   <!-- Property grouping - Personalization should be last -->
   <script id="x-icue-groups" type="application/json">
@@ -39,7 +41,7 @@ Use this as the starting point for every new iCUE widget. Adapt it to the specif
   ]
   </script>
 
-  <link rel="stylesheet" type="text/css" href="styles/[WidgetName].css">
+  <link rel="stylesheet" type="text/css" href="styles/[WidgetName].css" />
 </head>
 <body>
   <div class="widget-root">

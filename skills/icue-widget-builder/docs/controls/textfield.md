@@ -18,7 +18,7 @@ Text input field.
 <meta name="x-icue-property" content="title"
       data-label="tr('Title')"
       data-type="textfield"
-      data-default="'Hello World'">
+      data-default="'Hello World'" />
 ```
 
 ## Usage in JavaScript
@@ -70,12 +70,12 @@ HTML:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>'Textfield Demo'</title>
-    <link rel="icon" type="image/svg+xml" href="resources/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="resources/icon.svg" />
 
     <meta name="x-icue-property" content="title"
-          data-label="'Title'" data-type="textfield" data-default="'Hello World'">
+          data-label="'Title'" data-type="textfield" data-default="'Hello World'" />
 
     <script type="application/json" id="x-icue-groups">
     [{"title": "'Settings'", "properties": ["title"]}]

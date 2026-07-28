@@ -35,7 +35,7 @@ mywidget/
 
 Widgets consist of four primary sections:
 
-- **Head** – Metadata, [widget controls](#widget-controls), widget name (`<title>`), and icon (`<link rel="icon">`)
+- **Head** – Metadata, [widget controls](#widget-controls), widget name (`<title>`), and icon (`<link rel="icon" />`)
 - **Style** – CSS definitions (inline or external file)
 - **Body** – Visual elements and DOM structure
 - **Script** – Widget logic and event handlers
@@ -160,7 +160,7 @@ Meta tags in the `<head>` section control widget presentation in iCUE and define
 | Element             | Description                                                                                                        |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `<title>`           | Widget name displayed in iCUE in widgetselector. Use `tr('Name')` for [translations](./references/translations.md) |
-| `<link rel="icon">` | Widget icon displayed in iCUE selector. Supported formats: SVG, PNG, ICO                                           |
+| `<link rel="icon" />` | Widget icon displayed in iCUE selector. Supported formats: SVG, PNG, ICO                                           |
 
 ### Optional Meta Tags
 

@@ -71,6 +71,7 @@ Open the HTML file in a browser and test each supported target size.
 
 ### Structure
 
+- every void element in `<head>` is self-closed — `<meta ... />`, `<link ... />`, and any `br`/`hr`/`img`/`input`/`source` — because iCUE parses the head as XML and otherwise rejects the widget with "Missing Title Element"
 - `data-restrictions` uses JSON format
 - `x-icue-interactive` exists only when needed
 - `x-icue-groups` is valid JSON with no empty groups

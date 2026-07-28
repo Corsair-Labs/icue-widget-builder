@@ -266,6 +266,16 @@ Packaging safeguards:
 - distinguish runtime widget assets from Marketplace assets
 - do not assume internal install directories
 
+**The `<head>` of `index.html` must be XML well-formed.** iCUE parses the head with a strict XML parser on import, so every HTML5 void element inside `<head>` must self-close:
+
+```html
+<meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="resources/widget.svg" />
+<meta name="x-icue-property" content="textColor" data-label="tr('Text Color')" data-type="color" data-default="'#ffffff'" />
+```
+
+Writing `<meta charset="UTF-8">` or `<link rel="icon" ...>` without the trailing ` />` is valid HTML but invalid XML: the parser never closes the tag, fails at `</head>`, and iCUE rejects the widget with **"Missing Title Element"** even though `<title>` is present. `icuewidget validate` catches this. Void elements affected: `area`, `base`, `br`, `col`, `embed`, `hr`, `img`, `input`, `link`, `meta`, `param`, `source`, `track`, `wbr`.
+
 If the `icuewidget` CLI is available, prefer:
 
 - `icuewidget init`
@@ -397,6 +407,7 @@ Before final output, run the checklist in `references/security-and-testing-check
 
 Pay special attention to:
 
+- every void element in `<head>` is self-closed (`<meta ... />`, `<link ... />`) — otherwise iCUE import fails with "Missing Title Element"
 - documented meta tags only
 - correct device IDs and property types
 - valid grouping JSON
