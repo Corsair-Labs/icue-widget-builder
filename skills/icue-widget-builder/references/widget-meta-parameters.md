@@ -329,6 +329,36 @@ Group related widgets together in the iCUE widget picker:
 
 ---
 
+## Companion App Status (`x-icue-info` / `app-status`) — undocumented, confirmed via first-party widget only
+
+**Not in Elgato's public docs and not a `x-icue-property` control** — do not confuse it with the types above. Confirmed only by inspecting Corsair's own bundled `StreamDeck` widget at `<iCUE install dir>/widgets/StreamDeck/index.html`; treat it as unofficial and re-verify against that widget if it stops working after an iCUE update.
+
+Renders a native "is the companion app running/connected" row directly in the iCUE settings panel — sourced from iCUE's own knowledge of the companion app's state, not from widget JS. Use this whenever a widget's interactive elements depend on a companion app/plugin connection (for example, corner keys wired to the Stream Deck plugin) — without it, the settings panel gives the user no indication of *why* nothing is happening, which is a common source of "it doesn't work" reports for Stream Deck–integrated widgets.
+
+```html
+<meta name="x-icue-info" content="appStatus" data-label="tr('App Status')" data-type="app-status"
+      data-default="" application="stream-deck" />
+```
+
+| Attribute | Description |
+|-----------|-------------|
+| `name` | Must be `"x-icue-info"` (not `"x-icue-property"`) |
+| `content` | Variable name for the property id (convention: `appStatus`) — does not become a JS global the way `x-icue-property` does |
+| `data-type` | Must be `"app-status"` |
+| `application` | Which companion app to report on. Only `"stream-deck"` is confirmed working (used by the first-party StreamDeck widget); other values are unverified |
+
+Add it to its own group in `x-icue-groups` (mirrors the first-party widget's layout):
+
+```html
+<script id="x-icue-groups" type="application/json">
+[
+  { "title": "tr('Stream Deck')", "properties": ["appStatus"], "info": "tr('Configure the four corner keys from the Stream Deck app once it shows as connected above.')" }
+]
+</script>
+```
+
+**This meta tag is not sufficient on its own** — pair it with a defensive default status inside the widget, plus the connection/signal rules in `docs/plugins/stream-deck.md` → "Settings-Panel Status Row".
+
 ## Sensor Types (`sensorType`)
 
 Used with the Sensors Data Provider plugin's `getSensorType()` method.

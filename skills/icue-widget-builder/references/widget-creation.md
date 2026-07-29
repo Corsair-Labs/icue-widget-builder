@@ -190,8 +190,10 @@ function onIcueDataUpdated() {
     // Called on property change; properties available as global variables
 }
 
-// Handle late script loading
-if (iCUE_initialized) {
+// Handle late script loading. Always guard with typeof — a bare read throws ReferenceError
+// outside iCUE. Plugin-using widgets need the retry-based bootCheck() instead of this
+// one-shot check — see references/lifecycle-and-plugins.md.
+if (typeof iCUE_initialized !== 'undefined' && iCUE_initialized) {
     onIcueInitialized();
     onIcueDataUpdated();
 }
@@ -298,7 +300,13 @@ Group related widgets together in the iCUE widget picker using HTML meta tags:
       return undefined;
     }
 
+    // Idempotent: reachable both from the plugin's onInitialized event and from bootCheck()
+    // below. Without this guard the second call re-runs connect() and every sensor update
+    // fires the handler twice.
+    let pluginReady = false;
     function onPluginReady() {
+      if (pluginReady) return;
+      pluginReady = true;
       sensorApi = new SimpleSensorApiWrapper(window.plugins.Sensorsdataprovider);
       window.plugins.Sensorsdataprovider.sensorValueChanged.connect((id, val) => {
         if (id === getIcueProperty('sensorId')) updateDisplay(val, null);
@@ -321,8 +329,26 @@ Group related widgets together in the iCUE widget picker using HTML meta tags:
         parseFloat(val).toFixed(1) + (units ? ' ' + units : '');
     }
 
-    if (iCUE_initialized) onIcueDataUpdated();
-    if (typeof pluginSensorsdataprovider_initialized !== 'undefined' && pluginSensorsdataprovider_initialized) onPluginReady();
+    // Plugin-using widget, so a one-shot check is unsafe: a false read is a timing coin-flip, and
+    // missing the plugin's one-shot onInitialized leaves the widget permanently without sensor
+    // data. Event maps above stay assigned unconditionally. See references/lifecycle-and-plugins.md.
+    var bootAttempts = 0, BOOT_RETRY_MS = 100, BOOT_RETRY_MAX = 15; // ~1.5s grace window
+    function bootCheck() {
+      if (typeof pluginSensorsdataprovider_initialized !== 'undefined' && pluginSensorsdataprovider_initialized) {
+        onPluginReady(); // idempotent — safe if the plugin event already fired
+      }
+      if (typeof iCUE_initialized !== 'undefined' && iCUE_initialized) {
+        onIcueDataUpdated();
+        return;
+      }
+      if (bootAttempts < BOOT_RETRY_MAX) {
+        bootAttempts++;
+        setTimeout(bootCheck, BOOT_RETRY_MS);
+        return;
+      }
+      // Only now conclude this is really a plain browser.
+    }
+    bootCheck();
   </script>
 </body>
 </html>

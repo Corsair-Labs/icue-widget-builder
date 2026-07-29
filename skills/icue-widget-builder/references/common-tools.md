@@ -457,7 +457,8 @@ Opens a URL in the user's default system browser. Without this plugin, links ope
 **Inline snippet — paste in widget script (no `<script>` block needed, just the function):**
 ```javascript
 function openLink(url) {
-  if (window.plugins && window.plugins.Linkprovider && pluginLinkprovider_initialized) {
+  if (window.plugins && window.plugins.Linkprovider &&
+      typeof pluginLinkprovider_initialized !== 'undefined' && pluginLinkprovider_initialized) {
     window.plugins.Linkprovider.open(url);
   } else {
     // Fallback for browser testing outside iCUE
@@ -471,7 +472,7 @@ function openLink(url) {
 document.getElementById('my-link').addEventListener('click', () => openLink('https://example.com'));
 ```
 
-Note: `pluginLinkprovider_initialized` is set by iCUE before `onICUEInitialized` fires. The `window.open` fallback keeps the widget functional during browser testing.
+Note: do not assume `pluginLinkprovider_initialized` is set before `onICUEInitialized` fires — iCUE injects the flag on its own schedule, so treat the read as a race and always guard it with `typeof` (see `references/lifecycle-and-plugins.md`). This snippet is safe under that race because the check runs inside a user-driven click handler, long after boot, and falls back to `window.open` rather than losing state. Do not copy the bare one-shot shape into boot-time code. The `window.open` fallback also keeps the widget functional during browser testing.
 
 ---
 

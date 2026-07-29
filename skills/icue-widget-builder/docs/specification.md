@@ -168,6 +168,7 @@ Meta tags in the `<head>` section control widget presentation in iCUE and define
 | ----------------------- | ---------------------------------------------------------------------- |
 | `x-icue-widget-group`   | Group name in widget selector in iCUE (for example `tr('Clock Face')`) |
 | `x-icue-widget-preview` | Preview image path for widget selector (128×56px PNG)                  |
+| `x-icue-info` (`data-type="app-status"`) | **Not in Elgato's public docs** — confirmed only via Corsair's bundled `StreamDeck` widget. Renders a native companion-app connection-status row in the settings panel; see `references/widget-meta-parameters.md`. |
 
 #### Widget Grouping
 

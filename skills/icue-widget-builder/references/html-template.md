@@ -227,12 +227,15 @@ Use this as the starting point for every new iCUE widget. Adapt it to the specif
       onIcueDataUpdated();
     }
 
-    // Initial render for browser testing
-    if (typeof iCUE_initialized !== 'undefined' && iCUE_initialized) {
-      onIcueInitialized();
-    } else {
-      onIcueDataUpdated();
+    // A single false read of iCUE_initialized is a race, not proof this is a browser. Required for any
+    // plugin-using widget — see "The iCUE_initialized Check Is a Race, Not a Fact" in lifecycle-and-plugins.md.
+    var bootAttempts = 0, BOOT_RETRY_MS = 100, BOOT_RETRY_MAX = 15; // ~1.5s grace window
+    function bootCheck() {
+      if (typeof iCUE_initialized !== 'undefined' && iCUE_initialized) { onIcueInitialized(); return; }
+      if (bootAttempts < BOOT_RETRY_MAX) { bootAttempts++; setTimeout(bootCheck, BOOT_RETRY_MS); return; }
+      onIcueDataUpdated(); // only now conclude this is really a plain browser
     }
+    bootCheck();
   </script>
 </body>
 </html>
@@ -271,4 +274,6 @@ Use the `showState()` pattern to toggle between loading, error, empty, and conte
 
 ### Browser Testing
 
-The `if (typeof iCUE_initialized ...)` block at the bottom ensures the widget renders when opened directly in a browser (outside iCUE), which is essential for development and testing.
+The `bootCheck()` block at the bottom ensures the widget renders when opened directly in a browser (outside iCUE), which is essential for development and testing.
+
+It retries for ~1.5s before falling back. Keep `icueEvents` (and any `plugin*Events`) assigned unconditionally above the loop. Rationale: `references/lifecycle-and-plugins.md`.
