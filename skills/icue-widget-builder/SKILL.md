@@ -133,8 +133,8 @@ Skill-specific implementation references:
 
 | Device | Available Resolutions |
 |--------|---------------------|
-| Nautilus II 240 / 360 RS LCD | 616×224 (landscape), 616×456, 456×616 (portrait) |
-| iCUE LINK 5 Inch LCD Module | 696×308 (landscape), 696×624, 696×1256 (portrait) |
+| Nautilus II 240 / 360 RS LCD | 616×224, 616×456, 456×616, 456×304 |
+| iCUE LINK 5 Inch LCD Module | 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696 |
 
 ### 2.3 Layout Principles
 
@@ -370,12 +370,8 @@ Open the widget in a browser and test the target device resolutions.
 | Size | Dimensions | What to check |
 |------|-----------|---------------|
 | Pump LCD (Legacy, circular) | 480×480 | Hero visible, secondary elements hidden per design |
-| Nautilus II — Landscape | 616×224 | Hero visible, very short layout — only essential elements shown |
-| Nautilus II — Portrait | 456×616 | Tall portrait — verify layout uses extra vertical space |
-| Nautilus II — Square-ish | 616×456 | Mid-size layout — all planned elements visible |
-| iCUE LINK 5″ — Landscape | 696×308 | Hero visible, short landscape — verify correct element visibility |
-| iCUE LINK 5″ — Portrait | 696×1256 | Tallest portrait — verify content uses vertical space |
-| iCUE LINK 5″ — Square-ish | 696×624 | Mid-size layout — all planned elements visible |
+| Nautilus II | 616×224, 616×456, 456×616, 456×304 | Verify hero visible, layout adapts across all sizes |
+| iCUE LINK 5″ | 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696 | Verify hero visible, layout adapts across all sizes |
 | Keyboard LCD | 320×170 | Only hero + label showing |
 | Dashboard S-H | 840×344 | Short layout — verify correct elements hidden |
 | Dashboard S-V | 696×416 | Taller than S-H — verify correct elements showing |
