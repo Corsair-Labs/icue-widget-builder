@@ -4,10 +4,10 @@
 
 ## Overview
 
-Coomon tools are JavaScript and CSS utilities that ship with iCUE that can be used in your widgets to enhance the user experience with widget configuration.
+Common tools are JavaScript and CSS utilities that ship with iCUE that can be used in your widgets to enhance the user experience with widget configuration.
 
 :::important How to Use Common Tools
-To use any common tool in your widget, you must **copy the `common` folder** (or the specific tool subfolder you need) from iCUE widgets folder `<<iCUE install dir>>/widgets/` into your widget's root directory. Your widget references these files via relative paths (e.g., `common/tools/media_viewer/MediaViewer.js`), so the files must be present alongside your `index.html`.
+To use any common tool in your widget, you must **copy the `common` folder** (or the specific tool subfolder you need) from the iCUE widgets folder `<<iCUE install dir>>/widgets/com/corsair/` into your widget's root directory. Your widget references these files via relative paths (e.g., `common/tools/media_viewer/MediaViewer.js`), so the files must be present alongside your `index.html`.
 
 Your widget folder should look like this:
 
