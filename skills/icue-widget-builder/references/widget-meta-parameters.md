@@ -331,7 +331,7 @@ Group related widgets together in the iCUE widget picker:
 
 ## Companion App Status (`x-icue-info` / `app-status`) — undocumented, confirmed via first-party widget only
 
-**Not in Elgato's public docs and not a `x-icue-property` control** — do not confuse it with the types above. Confirmed only by inspecting Corsair's own bundled `StreamDeck` widget at `<iCUE install dir>/widgets/StreamDeck/index.html`; treat it as unofficial and re-verify against that widget if it stops working after an iCUE update.
+**Not in Elgato's public docs and not a `x-icue-property` control** — do not confuse it with the types above. Confirmed only by inspecting Corsair's own bundled `StreamDeck` widget at `<iCUE install dir>/widgets/com/corsair/streamdeck/index.html`; treat it as unofficial and re-verify against that widget if it stops working after an iCUE update.
 
 Renders a native "is the companion app running/connected" row directly in the iCUE settings panel — sourced from iCUE's own knowledge of the companion app's state, not from widget JS. Use this whenever a widget's interactive elements depend on a companion app/plugin connection (for example, corner keys wired to the Stream Deck plugin) — without it, the settings panel gives the user no indication of *why* nothing is happening, which is a common source of "it doesn't work" reports for Stream Deck–integrated widgets.
 

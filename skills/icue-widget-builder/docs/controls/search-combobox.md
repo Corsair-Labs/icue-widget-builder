@@ -43,4 +43,4 @@ console.log(city); // "12345" (selected city ID)
 
 ## Reference Implementation
 
-See the **Weather** widget for a complete implementation: `<<iCUE install dir>>/widgets/Weather/`
+See the **Weather** widget for a complete implementation: `<<iCUE install dir>>/widgets/com/corsair/weather/`

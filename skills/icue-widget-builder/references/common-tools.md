@@ -2,8 +2,8 @@
 
 Corsair ships reusable utilities and plugin wrappers with iCUE. They live in:
 ```
-<<iCUE install dir>>/widgets/common/tools/      ← Tools (standalone, no manifest changes)
-<<iCUE install dir>>/widgets/common/plugins/    ← Plugin wrappers (require manifest.json entry)
+<<iCUE install dir>>/widgets/com/corsair/common/tools/      ← Tools (standalone, no manifest changes)
+<<iCUE install dir>>/widgets/com/corsair/common/plugins/    ← Plugin wrappers (require manifest.json entry)
 ```
 
 ## Important: All JS Must Be Inlined
