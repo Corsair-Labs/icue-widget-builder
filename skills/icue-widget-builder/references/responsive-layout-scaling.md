@@ -170,7 +170,10 @@ When preview and device differ:
 At minimum test:
 
 - a reduced preview-like viewport for each targeted form factor
-- native-sized slot(s) for each targeted form factor
+- native-sized slot(s) for each targeted form factor:
+  - Round Pump LCD (all round screens): 480×480 (centered hero, circular safe zone)
+  - Smaller Rectangular Pump LCD (NAUTILUS II RS / TITAN II ULTRA LX): 616×224 (banner), 616×456, 456×616 (portrait), 456×304
+  - 5" Large Rectangular Pump LCD (TITAN II RX / 5" Module): 696×308 (banner), 696×624, 696×1256 (tall portrait), 624×344, 624×696, 1256×696
 - keyboard readability (primary values still glanceable)
 - Large/XL occupancy (no tiny center island by default)
 - vertical Xeneon Edge S/M/L/XL preview parity when vertical layouts are supported

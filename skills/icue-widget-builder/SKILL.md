@@ -1,6 +1,6 @@
 ---
 name: icue-widget-builder
-description: Builds iCUE HTML widgets for CORSAIR device screens using the bundled documentation as the source of truth. Use this whenever the user asks to create, modify, debug, review, validate, or package an iCUE widget for Xeneon Edge, Pump LCD, Nautilus II 240/360 RS LCD, iCUE LINK 5 Inch LCD Module, or keyboard LCD.
+description: Builds iCUE HTML widgets for CORSAIR device screens using the bundled documentation as the source of truth. Use this whenever the user asks to create, modify, debug, review, validate, or package an iCUE widget for Xeneon Edge, legacy round Pump LCDs, iCUE LINK XC7 ELITE LCD, iCUE LINK XD5 ELITE LCD, iCUE LINK TITAN II 360 RX LCD (5" LCD Screen Module), NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD (smaller rectangular screens), or keyboard LCD.
 ---
 
 # Skill: iCUE Widget Builder
@@ -28,7 +28,7 @@ If older skill guidance, templates, or local references conflict with the update
 
 Do not invent unsupported meta properties, undocumented package layouts, or internal installation-path assumptions.
 
-Before relying on the Widget Builder CLI, verify whether `icuewidget` is actually installed. When shell access is available, check with `icuewidget --version` (or `which icuewidget` as a fallback). If the command is missing or fails, tell the user the CLI does not appear to be installed yet and prompt them to install it before you suggest CLI-based steps.
+Before relying on the Widget Builder CLI, verify whether `icuewidget` is actually installed. When shell access is available, check with `icuewidget --version` (or `which icuewidget` as a fallback). If the command is missing or fails, tell the user the CLI does not appear to be installed yet and prompt them to install it before you suggest CLI-based steps. Install command (requires Node.js): `npm install -g icuewidget-cli` (package: https://www.npmjs.com/package/icuewidget-cli). Do not point users to a website download for the CLI.
 
 If the local `icuewidget` CLI is available, prefer using it for `init`, `validate`, and `package` workflows. If it is not available, explain the equivalent manual structure and clearly label the CLI steps as optional until installation is complete.
 
@@ -39,7 +39,15 @@ If the local `icuewidget` CLI is available, prefer using it for `init`, `validat
 For a **new widget** or a **major redesign**, ask about ALL of the following:
 
 1. **Widget purpose** — What data should the widget show? What is the source (system sensor, external API, static content, etc.)? If an API is involved, does the user have a preferred one?
-2. **Target devices** — Which devices should the widget support? (`dashboard_lcd`, `pump_lcd`, `keyboard_lcd`) For Xeneon Edge, which sizes? (S / M / L / XL, horizontal and/or vertical)
+2. **Target devices & pump screens** — Which devices should the widget support? (`dashboard_lcd`, `pump_lcd`, `keyboard_lcd`)
+   - For **Xeneon Edge** (`dashboard_lcd`): which sizes? (S / M / L / XL, horizontal and/or vertical)
+   - For **Pump LCD** (`pump_lcd`): **You MUST ask what exact pump LCD screen(s) the user wants to support** (multiple choices allowed):
+     - **5" Large Rectangular Screen Module**: iCUE LINK TITAN II 360 RX LCD (same as iCUE LINK 5" LCD Screen Module) — resolutions: 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696
+     - **Smaller Rectangular Screens**: NAUTILUS II RS LCD or iCUE LINK TITAN II ULTRA 360 LX LCD — resolutions: 616×224, 616×456, 456×616, 456×304
+     - **Legacy Round Screens (Circular)**: 480×480 circular displays — older circular AIO pumps (e.g., iCUE H150i ELITE LCD, iCUE H170i ELITE LCD)
+     - **iCUE LINK XC7 ELITE LCD (Round)**: 480×480 circular display — newer round pump head
+     - **iCUE LINK XD5 ELITE LCD (Round)**: 480×480 circular display — newer round reservoir/pump combo
+     - **Universal / All pump screens**: Support all of the above via responsive aspect-ratio breakpoints
 3. **Update interval** — How often should data refresh? What should happen when the widget is offline or the data source is unavailable?
 4. **Customization** — What should be configurable by the user in iCUE settings? Suggest sensible defaults but confirm.
 5. **Visual style** — Any specific look, theme, or inspiration? Minimalist, detailed, playful, etc.?
@@ -74,6 +82,21 @@ Minimum fast-path questions:
 5. Any setup/plugin/API implications?
 
 If those answers are clear, proceed directly to implementation and verification.
+
+### Adding pump LCD support to an existing widget
+
+When the user asks to add pump LCD support to an existing widget:
+
+1. **Always ask which pump screen(s) to support** (multiple choices allowed):
+   - **5" Large Rectangular Screen Module**: iCUE LINK TITAN II 360 RX LCD (same as iCUE LINK 5" LCD Screen Module) — resolutions: 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696
+   - **Smaller Rectangular Screens**: NAUTILUS II RS LCD or iCUE LINK TITAN II ULTRA 360 LX LCD — resolutions: 616×224, 616×456, 456×616, 456×304
+   - **Legacy Round Screens (Circular)**: 480×480 circular displays — older circular AIO pumps (e.g., iCUE H150i ELITE LCD, iCUE H170i ELITE LCD)
+   - **iCUE LINK XC7 ELITE LCD (Round)**: 480×480 circular display — newer round pump head
+   - **iCUE LINK XD5 ELITE LCD (Round)**: 480×480 circular display — newer round reservoir/pump combo
+   - **Universal / All pump screens**: Support all of the above via responsive aspect-ratio breakpoints
+2. Ensure `{ "type": "pump_lcd" }` is declared in `manifest.json` under `supported_devices`.
+3. Check existing properties, styling, and DOM structure to ensure hero metrics and layout elements scale gracefully across the selected pump aspect ratios.
+4. Implement responsive layout and CSS media queries tailored to the selected screens (see Section 2.3 for specific screen UI guidelines).
 
 ## Phase 2: Research & Design
 
@@ -112,13 +135,17 @@ Skill-specific implementation references:
 
 ### 2.2 Device Specifications
 
-| Device | ID | Resolution | Notes |
-|--------|-----|-----------|-------|
+| Device | ID | Form Factor & Resolutions | Notes |
+|--------|-----|---------------------------|-------|
 | Xeneon Edge | `dashboard_lcd` | See size table below | Horizontal & vertical orientations, touch support |
-| Pump LCD (Legacy, circular) | `pump_lcd` | 480×480 | Circular display, no touch |
-| Nautilus II 240 / 360 RS LCD | `pump_lcd` | See size table below | Rectangular display, no touch |
-| iCUE LINK 5 Inch LCD Module | `pump_lcd` | See size table below | Rectangular display, no touch |
+| Legacy Round Pump LCDs | `pump_lcd` | 480×480 | Circular display (1:1), older circular AIO pumps (e.g., iCUE H150i ELITE LCD, iCUE H170i ELITE LCD), centered hero, circular safe-area, no touch |
+| iCUE LINK XC7 ELITE LCD (Round) | `pump_lcd` | 480×480 | Circular display (1:1), newer round pump head, centered hero, circular safe-area, no touch |
+| iCUE LINK XD5 ELITE LCD (Round) | `pump_lcd` | 480×480 | Circular display (1:1), newer round reservoir/pump combo, centered hero, circular safe-area, no touch |
+| Smaller Rectangular Pump LCDs | `pump_lcd` | 616×224, 616×456, 456×616, 456×304 | NAUTILUS II RS LCD or iCUE LINK TITAN II ULTRA 360 LX LCD, rectangular, no touch |
+| 5" Large Rectangular Pump LCDs | `pump_lcd` | 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696 | iCUE LINK TITAN II 360 RX LCD (same as iCUE LINK 5" LCD Screen Module), rectangular, no touch |
 | Keyboard LCD | `keyboard_lcd` | 320×170 | Small screen, no touch |
+
+> **⚠️ Interactive mode limitation:** When `"interactive": true` is set in `manifest.json`, iCUE will **only** recognize the widget for `dashboard_lcd` (Xeneon Edge) devices. Widgets with interactive mode enabled will **not** appear as available for `pump_lcd` or `keyboard_lcd` devices, even if those device types are listed in `supported_devices`. If you need the widget on pump or keyboard screens, either set `"interactive": false` or remove the `interactive` field entirely.
 
 **Xeneon Edge size slots:**
 
@@ -129,12 +156,15 @@ Skill-specific implementation references:
 | Large | 1688×696 | 696×1688 |
 | Extra Large | 2536×696 | 696×2536 |
 
-**Nautilus II / iCUE LINK Pump LCD size slots:**
+**Pump LCD Screen Types and Resolutions:**
 
-| Device | Available Resolutions |
-|--------|---------------------|
-| Nautilus II 240 / 360 RS LCD | 616×224, 616×456, 456×616, 456×304 |
-| iCUE LINK 5 Inch LCD Module | 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696 |
+| Screen Category | Devices | Available Resolutions | Key Characteristics |
+|-----------------|---------|----------------------|---------------------|
+| **Legacy Round Screens** | Older circular AIO pumps (iCUE H150i ELITE LCD, iCUE H170i ELITE LCD, etc.) | 480×480 (1:1 aspect ratio) | Circular physical bezel. Inscribed circle safe area (`border-radius: 50%` padding zone). Keep hero centered; avoid peripheral corner items. |
+| **iCUE LINK XC7 ELITE LCD (Round)** | iCUE LINK XC7 ELITE LCD — newer round pump head | 480×480 (1:1 aspect ratio) | Circular physical bezel. Same circular safe area and layout principles as legacy round. |
+| **iCUE LINK XD5 ELITE LCD (Round)** | iCUE LINK XD5 ELITE LCD — newer round reservoir/pump combo | 480×480 (1:1 aspect ratio) | Circular physical bezel. Same circular safe area and layout principles as legacy round. |
+| **Smaller Rectangular Screens** | NAUTILUS II RS LCD, iCUE LINK TITAN II ULTRA 360 LX LCD | 616×224 (landscape banner)<br>616×456 (balanced landscape)<br>456×616 (portrait)<br>456×304 (compact landscape) | Rectangular displays. Must adapt between wide banner, mid-landscape, and portrait orientations. Clamp text floors for readability. |
+| **5" Large Rectangular Screen Module** | iCUE LINK TITAN II 360 RX LCD (same as iCUE LINK 5" LCD Screen Module) | 696×308 (wide banner)<br>696×624 (near square)<br>696×1256 (tall portrait)<br>624×344 (compact landscape)<br>624×696 (portrait)<br>1256×696 (ultra-wide landscape) | Large rectangular displays. Highest pixel canvas among pumps. Supports detailed dashboards, multi-metric tiles, graphs, or dual sensors. |
 
 ### 2.3 Layout Principles
 
@@ -199,11 +229,45 @@ Use semantic radius tokens such as `var(--radius-tile)`, which are themselves de
 **Rule 13 — Declare all intended devices in `manifest.json`**
 Only list `dashboard_lcd`, `pump_lcd`, `keyboard_lcd` for device types you have actually designed breakpoints and tested layouts for.
 
+**Rule 14 — Do not enable interactive mode for pump or keyboard widgets**
+Setting `"interactive": true` in `manifest.json` makes iCUE treat the widget as Xeneon Edge-only. iCUE will silently ignore the widget for `pump_lcd` and `keyboard_lcd` devices even if they are declared in `supported_devices`. Only enable interactive mode when the widget exclusively targets Xeneon Edge (`dashboard_lcd`).
+
 Safe-area padding starting points (expressed through the baseline system, not hardcoded per component):
 
 - Balanced / square (pump): about `5 * --layout-unit`
 - Wide landscape (dashboard): about `5 * --layout-unit` vertical and `8 * --layout-unit` horizontal
 - Tall portrait: about `8 * --layout-unit` vertical and `10 * --layout-unit` horizontal
+
+#### Developing UI According to Selected Pump Screens
+
+When developing UI for `pump_lcd`, tailor the layout and CSS specifically to the user's selected pump screen(s):
+
+1. **Targeting Round Screens (480×480)** — applies to Legacy Round Screens, iCUE LINK XC7 ELITE LCD, and/or iCUE LINK XD5 ELITE LCD:
+   - **Circular Safe Area**: The physical bezel is round. Inscribe all primary UI inside the central circle (~340px circle or `padding: calc(var(--layout-unit) * 6)` with optional `border-radius: 50%` wrapper). Never place critical metrics or corner labels near the screen corners, as they will be physically cut off.
+   - **Centered Composition**: Position the primary hero metric dead-center (`display: flex; justify-content: center; align-items: center`).
+   - **Radial & Arc Elements**: Circular progress rings, curved gauges, or radial icons look native on round screens. Avoid straight multi-column grid layouts.
+   - **Hide Peripheral Content**: Hide edge cards, wide graphs, and secondary rows that cannot fit inside the circular safe zone.
+   - **Note**: All round screens share the same 480×480 resolution and circular bezel layout. The CSS/layout is identical across legacy round, XC7, and XD5; the separation exists for device-specific targeting clarity.
+
+2. **Targeting Smaller Rectangular Screens (NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD)**:
+   - **Wide Landscape Banner (`616×224`, aspect ratio ~2.75)**: Use horizontal flow (`flex-direction: row; justify-content: space-around; align-items: center`). Place the hero stat on one side and a compact secondary readout or status icon on the other.
+   - **Standard Landscape (`616×456`, ratio ~1.35 and `456×304`, ratio 1.5)**: Balanced card layout. Hero centered or top-aligned with secondary stats beneath.
+   - **Portrait (`456×616`, ratio ~0.74)**: Vertical stack (`flex-direction: column; justify-content: space-evenly; align-items: center`). Hero at center, labels and secondary metrics above/below.
+   - **Readability Floors**: Prevent text from shrinking below readable thresholds (secondary text >= 12px).
+
+3. **Targeting 5" Large Rectangular Screen Module (iCUE LINK TITAN II 360 RX LCD / 5" Module)**:
+   - **Rich Content & High Occupancy**: With up to 1256×696 or 696×1256 pixels, this display provides ample room. Support richer visual presentations: multi-metric tiles, dual-temperature gauges, mini graphs, or detailed weather forecasts.
+   - **Landscape Canvas (`1256×696`, `624×344`, `696×624`)**: Use 2-column or 3-column layouts where the hero stat shares space with trend graphs or status lists.
+   - **Tall Portrait Canvas (`696×1256`, `624×696`)**: Use multi-row vertical stacking to display comprehensive data cards without sacrificing font size.
+   - **Wide Banner (`696×308`)**: Use horizontal flex arrangement with bold hero and multiple side-by-side stats.
+
+4. **Targeting Multiple or All Pump Screens (Universal Pump Support)**:
+   - Combine CSS aspect-ratio media queries to adapt automatically across all form factors:
+     - `@media (aspect-ratio: 1/1)`: Circular styling — circular safe-area padding, centered hero, hide corner elements.
+     - `@media (min-aspect-ratio: 2.0)`: Wide banner layout — horizontal flow, hero + compact side metrics.
+     - `@media (min-aspect-ratio: 1.2) and (max-aspect-ratio: 1.8)`: Standard landscape — balanced stacked or 2-column cards.
+     - `@media (max-aspect-ratio: 0.9)`: Portrait layout — vertical column stack.
+     - `@media (max-aspect-ratio: 0.6)`: Tall portrait layout — expanded vertical stack with rich details.
 
 ### 2.4 UX Guidelines
 
@@ -220,6 +284,7 @@ Before implementing, outline:
 ```text
 Widget Name: [Name]
 Target Devices: [dashboard_lcd | pump_lcd | keyboard_lcd]
+Target Pump Screens (if pump_lcd): [Legacy Round (480×480) | XC7 ELITE LCD Round (480×480) | XD5 ELITE LCD Round (480×480) | Smaller Rectangular (NAUTILUS II RS / TITAN II ULTRA LX) | 5" Large Rectangular (TITAN II RX / 5" Module) | All]
 Target Sizes (Xeneon Edge): [S / M / L / XL, horizontal / vertical]
 
 Properties:
@@ -369,9 +434,15 @@ Open the widget in a browser and test the target device resolutions.
 
 | Size | Dimensions | What to check |
 |------|-----------|---------------|
-| Pump LCD (Legacy, circular) | 480×480 | Hero visible, secondary elements hidden per design |
-| Nautilus II | 616×224, 616×456, 456×616, 456×304 | Verify hero visible, layout adapts across all sizes |
-| iCUE LINK 5″ | 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696 | Verify hero visible, layout adapts across all sizes |
+| Legacy Round Pump LCDs | 480×480 | Circular display — verify hero centered, no critical elements in cut-off corners |
+| iCUE LINK XC7 ELITE LCD (Round) | 480×480 | Circular display — same layout verification as legacy round |
+| iCUE LINK XD5 ELITE LCD (Round) | 480×480 | Circular display — same layout verification as legacy round |
+| Smaller Rectangular (NAUTILUS II RS / TITAN II ULTRA LX) — Banner | 616×224 | Wide banner — verify horizontal flex distribution, readable hero + label |
+| Smaller Rectangular (NAUTILUS II RS / TITAN II ULTRA LX) — Landscape | 616×456, 456×304 | Mid-size landscape — verify balanced layout, no text clipping |
+| Smaller Rectangular (NAUTILUS II RS / TITAN II ULTRA LX) — Portrait | 456×616 | Portrait layout — verify vertical stack, legible secondary metrics |
+| 5″ Large Rectangular (TITAN II RX / 5″ Module) — Wide | 1256×696, 696×308 | Wide/ultra-wide layout — verify rich content utilization without excessive empty space |
+| 5″ Large Rectangular (TITAN II RX / 5″ Module) — Standard | 624×344, 696×624 | Standard rectangular — verify balanced composition and crisp typography |
+| 5″ Large Rectangular (TITAN II RX / 5″ Module) — Tall Portrait | 696×1256, 624×696 | Tall portrait — verify multi-item or vertical layout utilization |
 | Keyboard LCD | 320×170 | Only hero + label showing |
 | Dashboard S-H | 840×344 | Short layout — verify correct elements hidden |
 | Dashboard S-V | 696×416 | Taller than S-H — verify correct elements showing |
