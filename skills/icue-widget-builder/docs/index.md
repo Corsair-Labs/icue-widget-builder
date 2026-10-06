@@ -39,9 +39,13 @@ If you have the iCUE Widget CLI installed, you can quickly scaffold a new widget
 icuewidget init MyWidget
 ```
 
-If you don’t have the CLI installed yet, follow the installation guide first:
+If you don’t have the CLI installed yet, install it from npm (requires [Node.js](https://nodejs.org/)):
 
-[Install the iCUE Widget CLI](https://www.corsair.com/us/en/s/downloads)
+```bash
+npm install -g icuewidget-cli
+```
+
+See the [`icuewidget-cli` package on npm](https://www.npmjs.com/package/icuewidget-cli) for details.
 
 The CLI will interactively prompt you for:
 
@@ -201,7 +205,7 @@ iCUE widgets can run on devices with LCD displays:
 | --------------- | --------------------------------------------------------------------------------------------- |
 | `dashboard_lcd` | XENEON EDGE                                                                                   |
 | `keyboard_lcd`  | VANGUARD 96, VANGUARD PRO 96                                                                  |
-| `pump_lcd`      | iCUE LINK XC7 ELITE LCD, iCUE LINK XD5 ELITE LCD, Nautilus II 240/360 RS LCD, iCUE LINK 5 Inch LCD Module |
+| `pump_lcd`      | All round screens (iCUE LINK XC7/XD5 ELITE LCD), smaller rectangular screens (NAUTILUS II RS LCD, iCUE LINK TITAN II ULTRA 360 LX LCD), 5" rectangular screens (iCUE LINK TITAN II 360 RX LCD, iCUE LINK 5 Inch LCD Screen Module) |
 
 ## What's Next?
 

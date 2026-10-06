@@ -116,7 +116,7 @@ Example manifest:
 | Device | `type` value | Description |
 |--------|-------------|-------------|
 | Xeneon Edge | `dashboard_lcd` | Dashboard LCD with touch support |
-| Pump LCD | `pump_lcd` | Pump with LCD display |
+| Pump LCD | `pump_lcd` | AIO cooler pump LCD: all round screens (480×480, XC7/XD5 ELITE LCD), smaller rectangular screens (NAUTILUS II RS LCD, iCUE LINK TITAN II ULTRA 360 LX LCD), 5" rectangular screens (iCUE LINK TITAN II 360 RX LCD / iCUE LINK 5" LCD Screen Module) |
 | Keyboard | `keyboard_lcd` | Keyboard with LCD |
 
 ### Device Features

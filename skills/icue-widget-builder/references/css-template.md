@@ -180,7 +180,17 @@ Do **not** use JavaScript to detect size/orientation and add body classes for st
 
 | Device / Slot | Dimensions | Aspect Ratio |
 |---------------|-----------|--------------|
-| Pump LCD | 480×480 | `1/1` |
+| Pump LCD (All round screens) | 480×480 | `1/1` (circular safe area) |
+| Smaller Rectangular Pump (Banner) | 616×224 | ≈ 2.75 |
+| Smaller Rectangular Pump (Balanced) | 616×456 | ≈ 1.35 |
+| Smaller Rectangular Pump (Portrait) | 456×616 | ≈ 0.74 |
+| Smaller Rectangular Pump (Compact) | 456×304 | = 1.50 |
+| 5" Large Rectangular Pump (Banner) | 696×308 | ≈ 2.26 |
+| 5" Large Rectangular Pump (Square-ish) | 696×624 | ≈ 1.12 |
+| 5" Large Rectangular Pump (Tall Portrait) | 696×1256 | ≈ 0.55 |
+| 5" Large Rectangular Pump (Landscape) | 624×344 | ≈ 1.81 |
+| 5" Large Rectangular Pump (Portrait) | 624×696 | ≈ 0.90 |
+| 5" Large Rectangular Pump (Ultra-Wide) | 1256×696 | ≈ 1.80 |
 | Keyboard LCD | 320×170 | ≈ 1.88 |
 | Dashboard S-H | 840×344 | ≈ 2.44 |
 | Dashboard S-V | 696×416 | ≈ 1.67 |
@@ -199,8 +209,17 @@ Do **not** use JavaScript to detect size/orientation and add body classes for st
 
 **Starter breakpoint set** — covers all iCUE devices:
 ```css
-/* Pump LCD — square 1:1 */
-@media (aspect-ratio: 1/1) { … }
+/* Pump LCD — circular / square 1:1 */
+@media (aspect-ratio: 1/1) {
+  /* Center hero within circular boundary, apply circular safe margin */
+  .main-content {
+    border-radius: 50%;
+    padding: calc(var(--layout-unit) * 6);
+  }
+}
+
+/* Wide / Banner pump screens (616×224, 696×308) */
+@media (min-aspect-ratio: 2.0) and (max-height: 350px) { … }
 
 /* Keyboard LCD — narrow landscape ~320×170 */
 @media (min-aspect-ratio: 1.8) and (max-height: 200px) { … }
@@ -214,10 +233,13 @@ Do **not** use JavaScript to detect size/orientation and add body classes for st
 /* Moderate short landscape — S-V (696×416) */
 @media (min-aspect-ratio: 1.5) and (max-aspect-ratio: 1.8) and (max-height: 450px) { … }
 
-/* Portrait */
+/* Portrait — general */
 @media (orientation: portrait) { … }
 
-/* Tall portrait — L-V, XL-V */
+/* Portrait pump screens (456×616, 624×696, 696×1256) */
+@media (max-aspect-ratio: 0.9) and (max-width: 700px) { … }
+
+/* Tall portrait — L-V, XL-V, and 696×1256 pump */
 @media (max-aspect-ratio: 0.5) { … }
 ```
 

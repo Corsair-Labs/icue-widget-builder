@@ -2,7 +2,7 @@
 
 An AI-agent skill for building, reviewing, and packaging CORSAIR iCUE widgets.
 
-This repository packages one universal iCUE widget-building skill that can be copied into Claude Code, Codex, OpenCode, or another compatible skill directory. The skill includes the workflow, technical documentation, examples, and reference checklists needed to create widgets for supported CORSAIR device screens such as Xeneon Edge, Pump LCD, and keyboard LCD displays.
+This repository packages one universal iCUE widget-building skill that can be copied into Claude Code, Codex, OpenCode, or another compatible skill directory. The skill includes the workflow, technical documentation, examples, and reference checklists needed to create widgets for supported CORSAIR device screens such as Xeneon Edge, Pump LCD (all round screens, iCUE LINK TITAN II 360 RX LCD / 5" Module, NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD), and keyboard LCD displays.
 
 ## What this skill helps with
 
@@ -24,7 +24,15 @@ To build and package widgets successfully, install the following:
 - **iCUE Widget CLI** — required to validate and package widgets into `.icuewidget` files for installation or distribution.
 - **A compatible CORSAIR device** — recommended for final device testing.
 
-Download iCUE and the iCUE Widget CLI from the official CORSAIR downloads page: <https://www.corsair.com/downloads>.
+Download iCUE from the official CORSAIR downloads page: <https://www.corsair.com/downloads>.
+
+The iCUE Widget CLI is distributed through npm ([`icuewidget-cli`](https://www.npmjs.com/package/icuewidget-cli)). It requires [Node.js](https://nodejs.org/). Install it globally:
+
+```bash
+npm install -g icuewidget-cli
+```
+
+To update it later, run `npm install -g icuewidget-cli@latest`.
 
 After installing the CLI, verify it is available in your terminal:
 
@@ -119,7 +127,7 @@ Create a Xeneon Edge weather widget with the current temperature, 3-day forecast
 ```
 
 ```text
-Build a Pump LCD widget that shows CPU temperature, GPU temperature, and fan speed using iCUE sensor data.
+Build a Pump LCD widget for NAUTILUS II RS LCD and round pump screens that shows CPU temperature, GPU temperature, and fan speed using iCUE sensor data.
 ```
 
 ```text
