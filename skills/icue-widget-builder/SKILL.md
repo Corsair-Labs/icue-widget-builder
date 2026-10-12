@@ -246,6 +246,59 @@ The personalization group must always follow this order (omit entries the widget
 7. `transparency`
 8. …any additional widget-specific personalization properties
 
+### 2.6 Assignment View vs Device - Known Differences
+
+iCUE renders the widget in two contexts with important differences:
+
+| Context | Behavior |
+|---|---|
+| **Device** | Full resolution (e.g. 840x344 for S-H). JS runs normally, ResizeObserver fires with real dimensions. |
+| **Assignment view** | Widget renders at actual device dimensions in a small iframe. ResizeObserver sees the same dimensions as on-device. BUT some DOM layout properties return 0 before the widget is fully painted. |
+
+**`clientHeight` returns 0 in assignment view.**
+Never use `element.clientHeight` for layout calculations. Use `element.getBoundingClientRect().height` instead - it returns the real rendered height in both contexts.
+
+**CSS variables set by ResizeObserver from widget root dimensions work correctly in both contexts.**
+JS can safely compute font sizes, icon sizes, and spacing from the widget root width/height - these values are correct in assignment view too. This is the "carefully controlled layout tokens" exception noted in Rule 8.
+
+**Avoid JS trim loops based on `scrollHeight`.**
+`while (list.scrollHeight > list.clientHeight)` loops remove children until the list fits. In assignment view, `scrollHeight` reports the natural (pre-flex-shrink) height, not the constrained height - causing the loop to remove all but one item.
+
+Instead, use CSS flex to distribute height equally among list items:
+
+```css
+.list-container {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;        /* clip, not scroll */
+  display: flex;
+  flex-direction: column;
+}
+
+.list-item {
+  flex: 1 1 0;             /* equal height share, no JS needed */
+  min-height: 0;
+  overflow: hidden;
+  align-items: flex-start; /* NOT center - center clips body top+bottom when content > item height */
+}
+```
+
+**Icon sizing: combine JS variable with CSS percentage cap.**
+JS sets an icon size CSS variable from widget root dimensions (works on device). But JS minimum clamps (e.g. `Math.max(22, ...)`) can produce icons larger than the tiny flex-allocated item height in assignment view.
+
+Solution - cap with a percentage of item height in CSS:
+
+```css
+.list-item-icon {
+  height: min(var(--js-icon-size, 32px), 80%);
+  width: auto;
+  aspect-ratio: 1 / 1;
+  align-self: center;   /* center icon vertically even when item uses flex-start */
+}
+```
+
+80% of a flex item height resolves correctly because items with `flex: 1 1 0` in a column container have a definite computed height.
+
 ## Phase 3: Implementation
 
 ### 3.1 Package Structure
@@ -265,6 +318,15 @@ Packaging safeguards:
 - prefer documented relative paths
 - distinguish runtime widget assets from Marketplace assets
 - do not assume internal install directories
+
+### Widget Display Name - Two Places
+
+The widget display name shown in iCUE lives in **two separate places** - both must be updated when renaming:
+
+1. **`manifest.json`** - the `name` field - shown in the widget picker panel
+2. **`index.html`** - the `<title>` tag - shown in other iCUE surfaces
+
+Updating only one of them leaves the widget partially renamed.
 
 **The `<head>` of `index.html` must be XML well-formed.** iCUE parses the head with a strict XML parser on import, so every HTML5 void element inside `<head>` must self-close:
 
