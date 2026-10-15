@@ -97,7 +97,7 @@ If those answers are clear, proceed directly to implementation and verification.
 
 ### Permission sync rule (applies to every edit, including the fast path)
 
-`manifest.json` `permissions` and the widget code must change **together**. Browser testing outside iCUE does not enforce permissions, and `icuewidget` CLI versions before 0.5.0 do not validate them at all. CLI 0.5.0+ (`icuewidget --version`) validates the `permissions` schema and warns on common code/manifest mismatches, but its scan is heuristic (literal URLs and paths only), so it supplements the audit below rather than replacing it.
+`manifest.json` `permissions` and the widget code must change **together**. Browser testing outside iCUE does not enforce permissions, and `icuewidget` CLI versions before 0.5.0 do not validate them at all. CLI 0.5.0+ (`icuewidget --version`) validates the `permissions` schema, **fails** on a literal network host or `watchPath()` path that no permission covers, and **warns** on pattern-based checks (media capture, clipboard, fonts, audio, downloads), non-literal URLs/paths, and plugin/permission mismatches. Its scan is text-based and cannot resolve dynamic URLs or paths, so it supplements the audit below rather than replacing it.
 
 - Whenever an edit adds, changes, or removes a network call (`fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`), a file read or `watchPath()` path, a hardware/clipboard/font/download/audio API, or a plugin that needs a permission (Stream Deck, File System), update `manifest.json` in the **same change**: add the needed entry, narrow or widen an existing one, or remove one that is no longer used.
 - Never leave a permission-gated call without its manifest entry, and never leave an entry whose code was deleted.
