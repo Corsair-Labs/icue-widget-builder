@@ -30,6 +30,7 @@ To set parameters for an HTML widget, use `<meta>` tags in the `<head>` section.
 | `media-selector` | Media file selector with transformations |
 | `sensors-combobox` | Sensor selector (requires Sensors plugin) |
 | `sensors-factory` | Multiple sensors with colors (requires Sensors plugin) |
+| `stream-deck-virtual-device` | Virtual Stream Deck device selector (requires Stream Deck app running; Windows only) |
 
 ---
 
@@ -273,6 +274,32 @@ sensors.forEach(item => {
 
 ---
 
+### Stream Deck Virtual Device (`stream-deck-virtual-device`)
+
+Dropdown and button for selecting a virtual Stream Deck device. Returns a device ID `string` (for example `"37b6e7f4-77a4-44b6-8aa9-2bb4d6007139"`). Requires the Stream Deck application to be running. Full reference: `docs/controls/stream-deck-virtual-device.md`.
+
+Use it together with the Stream Deck plugin — the selected value is the `deviceId` passed to `connectStreamDeck(widgetId, deviceId, columns, rows)`. As of plugin `1.2`, `connectStreamDeck` does **not** create a virtual device; the user creates/selects one via this control.
+
+Declare the plugin and the application permission in `manifest.json`:
+```json
+"required_plugins": ["widgetbuilder.streamdeck:StreamDeck:1.2"],
+"permissions": [
+  { "type": "application", "application": "Stream Deck" }
+]
+```
+
+```html
+<meta name="x-icue-property" content="virtualDevice"
+      data-label="tr('Virtual Device')"
+      data-type="stream-deck-virtual-device" />
+```
+
+```javascript
+console.log(virtualDevice); // "37b6e7f4-77a4-44b6-8aa9-2bb4d6007139"
+```
+
+---
+
 ## Meta Parameters Grouping
 
 Group parameters into separate iCUE sidebar panels using a `<script>` tag inside `<head>`. JavaScript expressions are supported in `title` and `info` fields.
@@ -356,6 +383,8 @@ Add it to its own group in `x-icue-groups` (mirrors the first-party widget's lay
 ]
 </script>
 ```
+
+**Permission:** the `application` permission (`{ "type": "application", "application": "Stream Deck" }`) must also be declared in `manifest.json` — the status row does not replace it, and a denied/revoked permission looks like a not-connected state to the user.
 
 **This meta tag is not sufficient on its own** — pair it with a defensive default status inside the widget, plus the connection/signal rules in `docs/plugins/stream-deck.md` → "Settings-Panel Status Row".
 

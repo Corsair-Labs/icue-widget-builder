@@ -81,6 +81,7 @@ Optional fields:
 | `interactive` | `boolean` | Enable touch/click interaction (default: `false`) |
 | `required_plugins` | `string[]` | Required plugins (format: `namespace:Name:version`) |
 | `modules` | `string[]` | JS modules for dynamic meta expressions |
+| `permissions` | `object[]` | Permission declarations for protected resources (network hosts, files/folders, hardware, clipboard, external applications). See `docs/permissions.md` and `references/permissions.md` |
 
 Example manifest:
 ```json
@@ -105,11 +106,31 @@ Example manifest:
    "required_plugins": [
       "widgetbuilder.sensorsdataprovider:Sensors:1.0"
    ],
+   "permissions": [
+      { "type": "url", "domain": "api.example.com" }
+   ],
    "modules": [
       "modules/MyModule.mjs"
    ]
 }
 ```
+
+### Permissions
+
+Declare every protected resource the widget uses in the `permissions` array. Pre-declared permissions are shown to the user at install time; anything undeclared triggers a runtime Allow/Deny prompt, and the user can revoke any permission later from iCUE widget settings — so handle denied access gracefully.
+
+| `type` | Extra fields | Grants |
+|--------|--------------|--------|
+| `url` | `domain` (hostname, IP, or `"any"`), optional `port` (required for `localhost`) | Network access (`fetch`, `WebSocket`, …) to that host and its subdomains |
+| `file` | `path` (absolute or `<Macro>/...`) | Read access to one file |
+| `folder` | `path` (absolute or `<Macro>/...`) | Read access to a directory tree |
+| `microphone`, `camera`, `speaker`, `screen`, `clipboard_read_write`, `local_fonts_access`, `download` | — | The corresponding browser/system capability |
+| `self_signed_certificate` | `host` | Connecting to a host with a self-signed TLS certificate |
+| `application` | `application` (e.g. `"Stream Deck"`) | Plugin access to a named external desktop app |
+
+Path macros in `path` use angle brackets: `<Home>`, `<Desktop>`, `<Documents>`, `<Downloads>`, `<Music>`, `<Pictures>`, `<Movies>`, `<Temp>`, `<AppData>`, `<Runtime>`.
+
+Only declare what the widget uses, prefer a specific `domain`/`path` over `"any"`/broad folders, and see `references/permissions.md` for the feature-to-permission map and failure-handling pattern.
 
 ### Device Types
 
@@ -241,6 +262,8 @@ Group related widgets together in the iCUE widget picker using HTML meta tags:
   ]
 }
 ```
+
+(No `permissions` array: the Sensors plugin and local rendering need none. Add one only when the widget reaches an external host, file, hardware API, or gated application.)
 
 `index.html`:
 ```html

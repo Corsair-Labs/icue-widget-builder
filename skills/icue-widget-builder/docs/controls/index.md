@@ -1,6 +1,4 @@
-
 # Widget Controls
-
 
 Widget controls are meta parameters that enable users to customize widget behavior and appearance through the iCUE settings panel. Each control is defined as a `<meta>` tag in the widget's HTML and becomes a global JavaScript variable accessible in your widget code.
 
@@ -91,16 +89,17 @@ All `data-*` attributes (except `data-type`) support [JavaScript expressions](..
 
 ### Media & Sensors
 
-| Control                                 | Description                                              | Use Case                             |
-| --------------------------------------- | -------------------------------------------------------- | ------------------------------------ |
-| [media-selector](media-selector.md)     | File picker with image/video support and transformations | Background images, logos, animations |
-| [sensors-combobox](sensors-combobox.md) | Hardware sensor selector                                 | CPU temp, GPU usage, fan speed       |
-| [sensors-factory](sensors-factory.md)   | Multiple sensor configuration with custom colors         | Multi-sensor displays                |
+| Control                                                     | Description                                              | Use Case                             |
+| ----------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------ |
+| [media-selector](media-selector.md)                         | File picker with image/video support and transformations | Background images, logos, animations |
+| [sensors-combobox](sensors-combobox.md)                     | Hardware sensor selector                                 | CPU temp, GPU usage, fan speed       |
+| [sensors-factory](sensors-factory.md)                       | Multiple sensor configuration with custom colors         | Multi-sensor displays                |
+| [stream-deck-virtual-device](stream-deck-virtual-device.md) | Virtual device selector using a user-selected device ID  | Virtual Stream Deck device selection |
 
 ## How Controls Work
 
 1. **Definition** – Controls are defined as `<meta>` tags in your widget's `<head>` section
-2. **Organization** – Group related controls using [property groups](../../specification.md#property-groups)
+2. **Organization** – Group related controls using [property groups](../specification.md#property-groups)
 3. **Injection** – iCUE automatically creates global JavaScript variables for each control
 4. **Updates** – When users change values, iCUE triggers the `onDataUpdated` event
 5. **Access** – Read current values directly from the global variables in your widget code
@@ -192,7 +191,7 @@ All `data-*` attributes (except `data-type`) support [JavaScript expressions](..
 
 ## Next Steps
 
-- Learn about [Property Groups](../../specification.md#property-groups) to organize controls in the settings panel
+- Learn about [Property Groups](../specification.md#property-groups) to organize controls in the settings panel
 - Explore [JavaScript Expressions](../javascript-expressions.md) for dynamic control behavior
-- Understand the [Event Lifecycle](../../specification.md#icue-events) to react to control changes
+- Understand the [Event Lifecycle](../specification.md#icue-events) to react to control changes
 - Review individual control documentation for specific attributes and examples

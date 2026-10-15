@@ -1,6 +1,6 @@
 ---
 name: icue-widget-builder
-description: Builds iCUE HTML widgets for CORSAIR device screens using the bundled documentation as the source of truth. Use this whenever the user asks to create, modify, debug, review, validate, or package an iCUE widget for Xeneon Edge, legacy round Pump LCDs, iCUE LINK XC7 ELITE LCD, iCUE LINK XD5 ELITE LCD, iCUE LINK TITAN II 360 RX LCD (5" LCD Screen Module), NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD (smaller rectangular screens), or keyboard LCD.
+description: Builds iCUE HTML widgets for CORSAIR device screens using the bundled documentation as the source of truth. Use this whenever the user asks to create, modify, debug, review, validate, or package an iCUE widget for Xeneon Edge, legacy round Pump LCDs, iCUE LINK XC7 ELITE LCD, iCUE LINK XD5 ELITE LCD, iCUE LINK TITAN II 360 RX LCD (5" LCD Screen Module), NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD (smaller rectangular screens), or keyboard LCD. Also covers declaring manifest `permissions` (network hosts, files/folders, hardware, clipboard, external applications such as Stream Deck) and plugin integrations.
 ---
 
 # Skill: iCUE Widget Builder
@@ -15,16 +15,19 @@ Treat the technical documentation in `docs/` as the primary source of truth, and
 
 Use `docs/` first for:
 
-- `manifest.json` requirements
+- `manifest.json` requirements, including `required_plugins` and `permissions`
 - widget/meta tags
 - property types and attributes
-- plugin usage
+- plugin usage and plugin permissions
+- permission types, fields, and path macros
 - iCUE globals (`iCUE`, `device`, `iCUE_initialized`)
 - packaging layout
 - translation behavior
 - general guidelines
 
 If older skill guidance, templates, or local references conflict with the updated docs, follow `docs/`.
+
+The bundled `docs/` track **Widget API 1.9.0 / iCUE 5.52** (QtWebEngine 6.9.3, Chromium 130). Features from this release — manifest `permissions`, File System Provider, Notifications Provider, Stream Deck Provider 1.2 with the `stream-deck-virtual-device` control, Media Provider 1.1 — need a matching iCUE version. When a widget uses them, set `min_app_version` / `min_framework_version` to values the docs support and tell the user the minimum iCUE version they imply.
 
 Do not invent unsupported meta properties, undocumented package layouts, or internal installation-path assumptions.
 
@@ -59,13 +62,22 @@ For a **new widget** or a **major redesign**, ask about ALL of the following:
    - rgba() from hex color picks? → ColorTools / hexToRGB
    - Hardware sensor values (CPU/GPU/RAM/etc.)? → Sensors plugin + SimpleSensorApiWrapper
    - Current FPS, FPS availability, or active process name? → FPS plugin + SimpleFpsApiWrapper
-   - Now-playing song/artist? → SimpleMediaApiWrapper
+   - Now-playing song/artist/album/artwork/play state? → Media plugin (1.1) + SimpleMediaApiWrapper
    - Links that open in the system browser (not inside the widget)? → LinkProvider
-   - Stream Deck virtual-device integration? → StreamDeck plugin
+   - Stream Deck virtual-device integration? → StreamDeck plugin (1.2) + `stream-deck-virtual-device` control + `application` permission (Windows only)
    - Dial/key action events from the physical device? → DeviceAction plugin + `device.deviceId`
-8. **Other setup dependencies** — API keys, account login, local media assets, or other setup?
-9. **Failure behavior** — What should users see in loading, empty, offline, and error states?
-10. **Documentation output** — Should the final deliverable include setup notes, compatibility notes, or Marketplace-facing disclosures?
+   - Watching a local file or folder for changes? → File System plugin + `file` / `folder` permission
+   - Incoming system notification count? → Notifications plugin
+8. **Permissions & protected resources** — Which resources will the widget touch? Ask all of these in one grouped question and map the answers using `references/permissions.md`:
+   - external API/network hosts (exact hostnames, ports; or user-supplied endpoints → `url`)
+   - a local service on `localhost` (→ `url` with required `port`)
+   - local files or folders to read or watch (→ `file` / `folder`, path macros)
+   - microphone, camera, speaker/audio output, screen capture, clipboard, local fonts, downloads, self-signed certificates
+   - an external desktop application through a plugin (→ `application`, e.g. Stream Deck)
+   Declare only what the widget actually uses, prefer specific hosts/paths over `"any"`/broad folders, and tell the user these are shown for approval at install and can be revoked at any time.
+9. **Other setup dependencies** — API keys, account login, local media assets, or other setup?
+10. **Failure behavior** — What should users see in loading, empty, offline, permission-denied, and error states?
+11. **Documentation output** — Should the final deliverable include setup notes, compatibility notes, permission disclosures, or Marketplace-facing disclosures?
 
 **Do not proceed to Phase 2 until the user has answered these questions.** If the reply is vague or incomplete, ask follow-up questions until you have enough detail to design the widget confidently.
 
@@ -79,9 +91,18 @@ Minimum fast-path questions:
 2. What exact behavior should change, and what must stay unchanged?
 3. Which devices/sizes must still be supported after the edit?
 4. Should existing property names/IDs remain backward compatible?
-5. Any setup/plugin/API implications?
+5. Any setup/plugin/API/permission implications (new hosts, files, hardware, or plugins that need `permissions` entries)?
 
 If those answers are clear, proceed directly to implementation and verification.
+
+### Permission sync rule (applies to every edit, including the fast path)
+
+`manifest.json` `permissions` and the widget code must change **together**. Browser testing outside iCUE does not enforce permissions, and `icuewidget` CLI versions before 0.5.0 do not validate them at all. CLI 0.5.0+ (`icuewidget --version`) validates the `permissions` schema, **fails** on a literal network host or `watchPath()` path that no permission covers, and **warns** on pattern-based checks (media capture, clipboard, fonts, audio, downloads), non-literal URLs/paths, and plugin/permission mismatches. Its scan is text-based and cannot resolve dynamic URLs or paths, so it supplements the audit below rather than replacing it.
+
+- Whenever an edit adds, changes, or removes a network call (`fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`), a file read or `watchPath()` path, a hardware/clipboard/font/download/audio API, or a plugin that needs a permission (Stream Deck, File System), update `manifest.json` in the **same change**: add the needed entry, narrow or widen an existing one, or remove one that is no longer used.
+- Never leave a permission-gated call without its manifest entry, and never leave an entry whose code was deleted.
+- If the exact host or path is not known yet (for example it comes from a user setting), ask the user before choosing `"any"` or a broad folder.
+- After the edit, run the **permission audit** in `references/permissions.md` and state the result (what changed in `permissions`, or "no permission changes") in your reply.
 
 ### Adding pump LCD support to an existing widget
 
@@ -110,8 +131,9 @@ Read only what you need for the current widget:
 | `docs/specification.md` | Checking required files, `manifest.json` schema, supported devices, events, globals, and plugin declaration syntax |
 | `docs/icue-global-object.md` | Using `iCUE.iCUELanguage`, `iCUE.fpsLimit`, `iCUE.isPreview`, or `iCUE.defaultTemperatureUnit()` |
 | `docs/device-object.md` | Using the injected `device.deviceId` global, especially for DeviceAction setup |
-| `docs/controls/index.md` and `docs/controls/*.md` | Choosing official control types and attributes |
-| `docs/plugins/index.md` and `docs/plugins/*.md` | Declaring and integrating Sensors, Media, Link, StreamDeck, FPS, and DeviceAction plugins |
+| `docs/controls/index.md` and `docs/controls/*.md` | Choosing official control types and attributes (including `stream-deck-virtual-device`) |
+| `docs/permissions.md` | Declaring `permissions` in `manifest.json`: `url`, `file`, `folder`, hardware, clipboard, `application`, path macros, runtime requests, and handling denial/revocation |
+| `docs/plugins/index.md` and `docs/plugins/*.md` | Declaring and integrating Sensors, Media, Link, StreamDeck, FPS, DeviceAction, FileSystem, and Notifications plugins |
 | `docs/common-tools.md` | Using bundled common tools and wrappers from local `common/` paths |
 | `docs/local-storage.md` | Persisting widget-specific data with `localStorage` keyed by `uniqueId` |
 | `docs/translations.md` | Official translation JSON behavior and `tr()` usage |
@@ -122,6 +144,7 @@ Skill-specific implementation references:
 | File | Read when... |
 |------|-------------|
 | `references/widget-creation.md` | First time building a widget; package structure, manifest shape, and basic workflow |
+| `references/permissions.md` | Choosing and declaring manifest permissions, least-privilege rules, the code-vs-manifest permission audit, denied-permission handling, and what to disclose to the user |
 | `references/widget-meta-parameters.md` | Choosing property types, settings panel structure, device restrictions, sensor properties, personalization |
 | `references/javascript-expressions.md` | Widget needs dynamic defaults, computed values, or module integration |
 | `references/local-storage.md` | Widget needs to persist data between sessions |
@@ -380,6 +403,7 @@ Typical files include:
 
 Packaging safeguards:
 
+- declare every protected resource the widget uses in `manifest.json` `permissions` (see 3.4 and `references/permissions.md`) — the manifest is the single place iCUE shows the user for approval
 - prefer documented relative paths
 - distinguish runtime widget assets from Marketplace assets
 - do not assume internal install directories
@@ -445,8 +469,13 @@ Place the personalization group last in `x-icue-groups`.
 ### 3.4 Quick Reference — Commonly Overlooked Types and Features
 
 - Manifest plugin declarations use `namespace:Name:version` strings in `required_plugins`, for example `widgetbuilder.sensorsdataprovider:Sensors:1.0`.
-- Supported plugins in the updated docs: Sensors (`Sensors`), Media (`Media`), Link (`Url`), Stream Deck (`StreamDeck`), FPS (`Fps`), and Device Action (`DeviceAction`). Read `docs/plugins/index.md` and the specific plugin doc before using any plugin.
-- Runtime plugin objects live under `window.plugins` with provider-specific names, for example `window.plugins.Sensorsdataprovider`, `Mediadataprovider`, `Linkprovider`, `Streamdeck`, `Fpsdataprovider`, and `Deviceactionprovider`. Check the matching `plugin{Provider}_initialized` flag and `plugin{Provider}Events` map.
+- Supported plugins in the updated docs: Sensors (`Sensors:1.0`), Media (`Media:1.1`), Link (`Url:1.0`), Stream Deck (`StreamDeck:1.2`, Windows only), FPS (`Fps:1.0`), Device Action (`DeviceAction:1.0`), File System (`FileSystem:1.0`), and Notifications (`Notifications:1.0`). Read `docs/plugins/index.md` and the specific plugin doc before using any plugin. Use the versions listed there — older `Media:1.0` / `StreamDeck:1.0` entries are outdated.
+- Runtime plugin objects live under `window.plugins` with provider-specific names, for example `window.plugins.Sensorsdataprovider`, `Mediadataprovider`, `Linkprovider`, `Streamdeck`, `Fpsdataprovider`, `Deviceactionprovider`, `Filesystemprovider`, and `Notificationsprovider`. Check the matching `plugin{Provider}_initialized` flag and `plugin{Provider}Events` map.
+- **`permissions`** (optional manifest array, see `docs/permissions.md`): `url` (`domain`, optional `port`; `localhost` requires `port`; `"any"` = all external hosts), `file` / `folder` (`path`, with `<Macro>` prefixes such as `<Documents>`, `<AppData>`, `<Temp>`), `microphone`, `camera`, `speaker`, `screen`, `clipboard_read_write`, `local_fonts_access`, `self_signed_certificate` (`host`), `download`, and `application` (`application` name, e.g. `"Stream Deck"`). Path macros use **angle brackets** in the manifest but **curly braces** in File System Provider `watchPath()` calls.
+- Permissions the widget needs **must be pre-declared** in `manifest.json` so the user approves them at install. Undeclared access triggers a runtime Allow/Deny prompt, and the user can revoke any permission at any time — so every network, file, hardware, and plugin call needs a failure path (last known data / setup hint), never an assumption that access persists.
+- Stream Deck plugin: declare `{ "type": "application", "application": "Stream Deck" }` in `permissions`; select the device with the `stream-deck-virtual-device` control (`connectStreamDeck` no longer creates a virtual device in 1.2). The documented Stream Deck example manifest targets `"os": [{ "platform": "windows" }]`.
+- File System plugin: declare `file` (watch one file) or `folder` (watch a directory) permission; `watchPath('{Documents}/...')` must fall inside the declared path.
+- Media plugin 1.1 exposes `songName`, `artist`, `album`, `thumbnail` (base64 PNG data URL or empty), `isPlaying`, with matching `...Changed` signals; `SimpleMediaApiWrapper` has `getAlbum()`, `getThumbnail()`, `getIsPlaying()` in addition to `getSongName()` / `getArtist()`.
 - `sensors-combobox` — requires Sensors plugin (`widgetbuilder.sensorsdataprovider:Sensors:1.0` in `manifest.json`). Returns a sensor ID string. Use `SimpleSensorApiWrapper` to fetch sensor data asynchronously. Use `plugins.Sensorsdataprovider.getDefaultSensorIdBlock('temperature')` as `data-default` when appropriate.
 - `sensors-factory` — requires Sensors plugin. Returns a `[{sensorId, color}]` array for multi-sensor charts/graphs.
 - `search-combobox` — searchable dropdown backed by a module function. Use `data-values="Module.searchFn"` and `data-default="Module.getDefault"`.
@@ -476,6 +505,7 @@ The HTML and CSS template references should be treated as examples, not normativ
 When using an external API:
 
 - confirm the API choice with the user first
+- declare each API host in `manifest.json` as a `url` permission (`{ "type": "url", "domain": "api.example.com" }`) — without it requests are blocked; prefer specific hosts over `"any"`
 - explain what data will be sent and why
 - ask for explicit approval before making any test request
 - verify the actual endpoint with a real test request after approval
@@ -483,6 +513,7 @@ When using an external API:
 - use HTTPS only
 - minimize data sent and cache responses where appropriate
 - make refresh rate configurable when polling is required
+- handle blocked/failed requests (offline, or permission denied/revoked by the user) by keeping last known data and showing an offline indicator
 
 If no suitable free API exists, ask the user to provide their own API key via a `textfield` property.
 
@@ -532,7 +563,7 @@ At minimum also verify:
 
 ### 4.2 Preflight Check
 
-Before final output, run the checklist in `references/security-and-testing-checklists.md`.
+Before final output, run the **permission audit** in `references/permissions.md` (scan the code for permission-gated calls and reconcile each hit against `manifest.json`), then run the checklist in `references/security-and-testing-checklists.md`.
 
 Pay special attention to:
 
@@ -541,13 +572,15 @@ Pay special attention to:
 - correct device IDs and property types
 - valid grouping JSON
 - translation key coverage
-- correct `manifest.json` fields, including `min_app_version`, required OS declarations, `supported_devices`, and `required_plugins` where applicable
+- correct `manifest.json` fields, including `min_app_version`, required OS declarations, `supported_devices`, `required_plugins`, and `permissions` where applicable
+- `permissions` covers every external host, file/folder, hardware API, and plugin-gated application the code touches — and nothing more; paths use `<Macro>` syntax, and `watchPath` paths fall inside a declared permission
+- every permission-gated call has a failure path (denied/revoked access does not blank or break the widget)
 - correct usage of `iCUE`, `device`, and plugin globals from the updated docs
 - accessibility and contrast
 - media background rules if `media-selector` is used
-- no unsafe or undisclosed outbound behavior
+- no unsafe or undisclosed outbound behavior (every outbound host is both disclosed to the user and declared as a `url` permission)
 
-Before final delivery, verify whether `icuewidget` is installed. If it is, run `icuewidget validate` or explicitly recommend that the user run it. If it is not installed, say that validation via CLI could not be performed and prompt the user to install the CLI first.
+Before final delivery, verify whether `icuewidget` is installed. If it is, run `icuewidget validate` or explicitly recommend that the user run it. If the widget declares or needs `permissions` and the CLI is older than 0.5.0, tell the user it will not check them and recommend `npm install -g icuewidget-cli@latest`. If it is not installed, say that validation via CLI could not be performed and prompt the user to install the CLI first.
 
 ## Phase 5: Final Response
 
@@ -558,7 +591,8 @@ Return:
 3. configurable properties and defaults
 4. handled states (loading, empty, error/offline, content)
 5. setup notes, plugin/API requirements, and Marketplace notes when relevant
-6. a reminder to validate/package with the Widget Builder CLI when appropriate, or an install prompt if the CLI is missing
+6. a **Permissions** table (type, scope, reason) matching the `manifest.json` `permissions` array, or an explicit "none required"
+7. a reminder to validate/package with the Widget Builder CLI when appropriate, or an install prompt if the CLI is missing
 
 Use a concise summary such as:
 
@@ -578,10 +612,15 @@ Use a concise summary such as:
 |----------|------|-------------|---------|
 | [name] | [type] | [description] | [default] |
 
+### Permissions
+| Permission | Scope | Why |
+|------------|-------|-----|
+| [type] | [host / path / app] | [reason] |
+
 ### States Handled
 - Loading: [description]
 - Empty: [description]
-- Error/Offline: [description]
+- Error/Offline/Permission denied: [description]
 - Content: [description]
 
 ### Files Generated

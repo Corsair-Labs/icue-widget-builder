@@ -334,7 +334,9 @@ TickerTracker.setVerticalAlign('center'); // or 'top', 'bottom', '40%'
 
 Plugin wrappers provide Promise-based access to iCUE system data. They all extend `IcueWidgetApiWrapper` — include the base class whenever any plugin wrapper is used.
 
-Officially supported plugins: **Sensors**, **Media**, **Link**. FPS data is available as a sensor type (`"fps"`) via the Sensors plugin — no separate FPS plugin exists.
+Officially supported plugins (see `docs/plugins/index.md`): **Sensors**, **Media** (1.1), **Link**, **Stream Deck** (1.2, Windows only), **FPS**, **Device Action**, **File System**, and **Notifications**. FPS has its own plugin (`widgetbuilder.fpsdataprovider:Fps:1.0`, `SimpleFpsApiWrapper`) — see `docs/plugins/fps-data-provider.md`; the Sensors plugin can also expose an `"fps"` sensor type.
+
+Plugin wrappers only need a `required_plugins` entry. Plugins that reach protected resources — **Stream Deck** (`application` permission) and **File System** (`file` / `folder` permission) — also need a `permissions` entry in `manifest.json`; see `references/permissions.md`.
 
 ### How Plugins Work
 
@@ -419,22 +421,25 @@ sensorApi.getSensorValue(selectedSensorId).then(value => {
 });
 ```
 
-**FPS via sensors:** To read current frame rate, find the sensor with type `"fps"` using `getAllSensorIds()` + `getSensorType()`. No separate FPS plugin is needed.
+**FPS:** prefer the dedicated FPS plugin (`docs/plugins/fps-data-provider.md`) for current FPS, availability, and active process name. Reading an `"fps"` sensor via `getAllSensorIds()` + `getSensorType()` also works when only a sensor value is needed.
 
 ---
 
 ### SimpleMediaApiWrapper
 
-Reads currently playing media track info (song name, artist).
+Reads currently playing media track info (song name, artist, album, album art, play state).
 
-**manifest.json:** `"widgetbuilder.mediadataprovider:Media:1.0"`
+**manifest.json:** `"widgetbuilder.mediadataprovider:Media:1.1"` (1.1 adds `album`, `thumbnail`, `isPlaying`; use 1.1, not 1.0)
 
 ```html
 <script>
 class SimpleMediaApiWrapper extends IcueWidgetApiWrapper {
   constructor(plugin, timeoutMs = 5000) { super(plugin, timeoutMs); }
-  getSongName() { return this.request(this.plugin.getSongName); }
-  getArtist()   { return this.request(this.plugin.getArtist); }
+  getSongName()  { return this.request(this.plugin.getSongName); }
+  getArtist()    { return this.request(this.plugin.getArtist); }
+  getAlbum()     { return this.request(this.plugin.getAlbum); }
+  getThumbnail() { return this.request(this.plugin.getThumbnail); } // base64 PNG data URL, or '' when unavailable
+  getIsPlaying() { return this.request(this.plugin.getIsPlaying); }  // true while playing
 }
 </script>
 ```
@@ -444,7 +449,10 @@ class SimpleMediaApiWrapper extends IcueWidgetApiWrapper {
 const mediaApi = new SimpleMediaApiWrapper(window.plugins.Mediadataprovider);
 mediaApi.getSongName().then(name => { songEl.textContent = name || 'Nothing playing'; });
 mediaApi.getArtist().then(artist => { artistEl.textContent = artist; });
+mediaApi.getThumbnail().then(url => { if (url) { artEl.src = url; } }); // data URL — assign directly to <img src> / background-image
 ```
+
+The plugin also emits property change signals (`songNameChanged`, `artistChanged`, `albumChanged`, `thumbnailChanged`, `isPlayingChanged`) — connect to them to refresh on track changes instead of polling. See `docs/plugins/media-data-provider.md`.
 
 ---
 
@@ -476,6 +484,18 @@ Note: do not assume `pluginLinkprovider_initialized` is set before `onICUEInitia
 
 ---
 
+### StreamDeck, FileSystem, and Notifications (documented in `docs/plugins/`)
+
+These have no bundled wrapper snippet here — use the docs as the source of truth.
+
+| Plugin | Manifest | Permission | Notes |
+|---|---|---|---|
+| Stream Deck | `widgetbuilder.streamdeck:StreamDeck:1.2` | `{ "type": "application", "application": "Stream Deck" }` | Windows only. Select the device with the `stream-deck-virtual-device` control (`docs/controls/stream-deck-virtual-device.md`). Signals: `virtualDeviceCreated`, `buttonIconUpdated`, `streamdeckAuthenticated`, `streamdeckUnreachable`, `authenticationRequired`, `authenticationRejected`; `connectionStatus` property. |
+| File System | `widgetbuilder.filesystemprovider:FileSystem:1.0` | `file` (watch a file) or `folder` (watch a directory) — path in manifest uses `<Macro>`, `watchPath()` uses `{Macro}` | `watchPath(path)`, `unwatchPath(path)`, `clearPaths()`; signals `fileChanged`, `fileContentDiff`, `fileAdded`, `fileRemoved`. Blocked silently without the permission. |
+| Notifications | `widgetbuilder.notificationsprovider:Notifications:1.0` | none documented | `getNotificationCount()`, signal `notificationCountChanged()`, `SimpleNotificationsApiWrapper` (`common/plugins/SimpleNotificationsApiWrapper.js`). |
+
+---
+
 ## Phase 1 Questions to Ask the User
 
 During requirements gathering, ask these after the core widget questions:
@@ -491,9 +511,15 @@ During requirements gathering, ask these after the core widget questions:
 > **Plugins** (require iCUE plugin registration):
 > - **Sensor Data** — Should the widget display hardware sensor values (CPU/GPU temp, fan speed, RAM, etc.)? *(adds Sensors plugin + SimpleSensorApiWrapper)*
 > - **FPS Data** — Should the widget display current FPS, FPS availability, or active process name? *(adds FPS plugin + SimpleFpsApiWrapper)*
-> - **Now Playing** — Should the widget show the currently playing song/artist? *(adds SimpleMediaApiWrapper)*
+> - **Now Playing** — Should the widget show the currently playing song/artist/album/artwork or play state? *(adds Media 1.1 plugin + SimpleMediaApiWrapper)*
 > - **Open Links in Browser** — Does the widget have any clickable links that should open in the system browser rather than inside the widget? *(adds LinkProvider)*
-> - **Stream Deck** — Should the widget create or update a virtual Stream Deck device? *(adds StreamDeck plugin)*
+> - **Stream Deck** — Should the widget drive a virtual Stream Deck device (Windows only)? *(adds StreamDeck 1.2 plugin, `stream-deck-virtual-device` control, and the `application` permission for "Stream Deck")*
 > - **Device Actions** — Should the widget react to physical dial/key events from the device? *(adds DeviceAction plugin and uses `device.deviceId`)*
+> - **File Watching** — Should the widget react to changes in a local file or folder? *(adds File System plugin and a `file` / `folder` permission)*
+> - **Notifications** — Should the widget show the incoming system notification count? *(adds Notifications plugin)*
+>
+> **Permissions** (declared in `manifest.json`, shown to the user for approval at install):
+> - Does the widget call any external API or local service? Which hosts/ports? *(adds `url` permissions)*
+> - Does it read local files, or use microphone, camera, speaker, screen capture, clipboard, local fonts, or downloads? *(adds the matching permissions — see `references/permissions.md`)*
 
-When the user confirms a tool or plugin, include its inline code block in `<head>` of the generated `index.html` and add any required `required_plugins` entries to `manifest.json`.
+When the user confirms a tool or plugin, include its inline code block in `<head>` of the generated `index.html` and add any required `required_plugins` entries — and `permissions` entries, where the plugin or feature needs them — to `manifest.json`.
