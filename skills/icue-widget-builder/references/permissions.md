@@ -116,7 +116,7 @@ async function refresh() {
 
 ## Permission audit (run after every change that touches the widget code)
 
-The Widget CLI does not validate `permissions`, and the browser does not enforce them, so reconcile code and manifest by hand. This is mandatory before final delivery and after any edit that adds, changes, or removes a permission-gated call.
+Browser testing does not enforce permissions, and `icuewidget` CLI versions before 0.5.0 do not validate them. CLI 0.5.0+ checks the `permissions` schema (errors) and warns on plugin/permission mismatches and on literal URLs, `watchPath()` paths, and hardware/clipboard/font/audio/download calls that no permission covers; run `icuewidget validate` and treat its permission warnings as audit findings. Its scan cannot resolve dynamic URLs or paths and skips bundled `common/` files, so still reconcile code and manifest by hand. This is mandatory before final delivery and after any edit that adds, changes, or removes a permission-gated call.
 
 **1. Scan the widget's own files** (`index.html`, `modules/`, `scripts/`; skip bundled `common/` tools unless they were modified) for permission-gated calls. Heuristic patterns, not exhaustive — also read for indirect use (URLs built from variables or settings, wrappers around `fetch`):
 
@@ -153,6 +153,7 @@ or `Permission audit: no permission-gated calls; permissions array omitted.`
 
 ## Testing permissions
 
+- Run `icuewidget validate` (CLI 0.5.0+): schema errors fail, and the warnings list permission mismatches it could prove. Older CLI versions skip permission checks entirely.
 - Browser testing outside iCUE does **not** enforce manifest permissions, so a widget that works in the browser can
   still fail in iCUE if a `permissions` entry is missing or too narrow. Check every host/path the code touches against
   the manifest by hand (grep for `fetch(`, `WebSocket(`, `XMLHttpRequest`, `watchPath(`).

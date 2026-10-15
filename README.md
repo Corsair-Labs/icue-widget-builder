@@ -41,6 +41,8 @@ After installing the CLI, verify it is available in your terminal:
 icuewidget --version
 ```
 
+Use CLI **0.5.0 or later** for permission checks: it validates the manifest `permissions` schema and warns when code uses network hosts, file paths, or hardware APIs that no permission covers. Older versions skip permission validation, so `icuewidget validate` passing does not mean the permissions are right. The skill's permission audit covers the cases the CLI's heuristic scan cannot.
+
 The skill can still help create widget files manually, but packaging requires the CLI:
 
 ```bash

@@ -97,7 +97,7 @@ If those answers are clear, proceed directly to implementation and verification.
 
 ### Permission sync rule (applies to every edit, including the fast path)
 
-`manifest.json` `permissions` and the widget code must change **together**. Nothing else keeps them in sync — the Widget CLI does not validate permissions and browser testing outside iCUE does not enforce them.
+`manifest.json` `permissions` and the widget code must change **together**. Browser testing outside iCUE does not enforce permissions, and `icuewidget` CLI versions before 0.5.0 do not validate them at all. CLI 0.5.0+ (`icuewidget --version`) validates the `permissions` schema and warns on common code/manifest mismatches, but its scan is heuristic (literal URLs and paths only), so it supplements the audit below rather than replacing it.
 
 - Whenever an edit adds, changes, or removes a network call (`fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`), a file read or `watchPath()` path, a hardware/clipboard/font/download/audio API, or a plugin that needs a permission (Stream Deck, File System), update `manifest.json` in the **same change**: add the needed entry, narrow or widen an existing one, or remove one that is no longer used.
 - Never leave a permission-gated call without its manifest entry, and never leave an entry whose code was deleted.
@@ -580,7 +580,7 @@ Pay special attention to:
 - media background rules if `media-selector` is used
 - no unsafe or undisclosed outbound behavior (every outbound host is both disclosed to the user and declared as a `url` permission)
 
-Before final delivery, verify whether `icuewidget` is installed. If it is, run `icuewidget validate` or explicitly recommend that the user run it. If it is not installed, say that validation via CLI could not be performed and prompt the user to install the CLI first.
+Before final delivery, verify whether `icuewidget` is installed. If it is, run `icuewidget validate` or explicitly recommend that the user run it. If the widget declares or needs `permissions` and the CLI is older than 0.5.0, tell the user it will not check them and recommend `npm install -g icuewidget-cli@latest`. If it is not installed, say that validation via CLI could not be performed and prompt the user to install the CLI first.
 
 ## Phase 5: Final Response
 
