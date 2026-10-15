@@ -55,3 +55,9 @@ function openLink(url) {
 
 openLink("https://www.corsair.com/ww/en");
 ```
+
+## No Wrapper Class Needed
+
+The Link plugin is fully synchronous — calling `open()` returns immediately with no async response. No `IcueWidgetApiWrapper` is required. The safe usage pattern above is all you need.
+
+The `pluginLinkprovider_initialized` flag is set by iCUE before your widget's `onICUEInitialized` callback fires. Always guard calls behind this check to avoid errors during browser testing.

@@ -73,8 +73,9 @@ The `manifest.json` file defines widget metadata, system requirements, and marke
 | `os`                    | `object[]` | Yes      | Array of supported operating systems objects. Each object requires a `platform` property. At the moment only `windows` is supported. |
 | `supported_devices`     | `object[]` | Yes      | Array of supported device types (see [Device Support](#device-support))                                                              |
 | `interactive`           | `boolean`  | No       | Enable widget click handling on touch devices (default: `false`)                                                                     |
-| `required_plugins`      | `string[]` | No       | Array of required [plugins](./references/plugins/index.md) in `namespace:Name:version` format                                       |
-| `modules`               | `string[]` | No       | Array of JavaScript module paths (see [Module Integration](./references/javascript-expressions.md#module-integration))              |
+| `required_plugins`      | `string[]` | No       | Array of required [plugins](./plugins/index.md) in `namespace:Name:version` format                                       |
+| `modules`               | `string[]` | No       | Array of JavaScript module paths (see [Module Integration](./javascript-expressions.md#module-integration))              |
+| `permissions`           | `object[]` | No       | Array of permission declarations for protected resources (see [Permissions](./permissions.md))                                       |
 | `min_app_version`       | `string`   | Yes      | Minimum recommended iCUE version (e.g., `5.47`)                                                                                      |
 
 ### Example Manifest
@@ -109,7 +110,7 @@ The `manifest.json` file defines widget metadata, system requirements, and marke
 	"interactive": true,
 	"required_plugins": [
 		"widgetbuilder.sensorsdataprovider:Sensors:1.0",
-		"widgetbuilder.mediadataprovider:Media:1.0"
+		"widgetbuilder.mediadataprovider:Media:1.1"
 	],
 	"modules": [
 		"modules/CitySearch.mjs"
@@ -159,7 +160,7 @@ Meta tags in the `<head>` section control widget presentation in iCUE and define
 
 | Element             | Description                                                                                                        |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `<title>`           | Widget name displayed in iCUE in widgetselector. Use `tr('Name')` for [translations](./references/translations.md) |
+| `<title>`           | Widget name displayed in iCUE in widgetselector. Use `tr('Name')` for [translations](./translations.md) |
 | `<link rel="icon" />` | Widget icon displayed in iCUE selector. Supported formats: SVG, PNG, ICO                                           |
 
 ### Optional Meta Tags
@@ -179,7 +180,7 @@ Widgets in the same `x-icue-widget-group` will be grouped together in the widget
 ```
 
 :::note
-The `tr()` function enables [localized group names](./references/translations.md).
+The `tr()` function enables [localized group names](./translations.md).
 :::
 
 #### Widget Preview
@@ -199,7 +200,7 @@ Widget controls are user-configurable parameters defined as `<meta>` tags with `
 ```
 
 :::info
-For complete documentation on available control types, attributes, and examples, see [Widget Controls](./references/controls/index.md).
+For complete documentation on available control types, attributes, and examples, see [Widget Controls](./controls/index.md).
 :::
 
 ##### Property Groups
@@ -228,9 +229,9 @@ Property groups organize controls into panels in the iCUE. Groups are defined in
 
 | Property     | Type       | Required | Description                                                                                                                                             |
 | ------------ | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`      | `string`   | Yes      | Group heading displayed in settings panel. Supports [JavaScript expressions](./references/javascript-expressions.md) including `tr()` for translations |
+| `title`      | `string`   | Yes      | Group heading displayed in settings panel. Supports [JavaScript expressions](./javascript-expressions.md) including `tr()` for translations |
 | `properties` | `string[]` | Yes      | Array of meta parameters (`content` values) to include in this group                                                                                    |
-| `info`       | `string`   | No       | Optional help text displayed as tooltip. Supports [JavaScript expressions](./references/javascript-expressions.md) including `tr()`                    |
+| `info`       | `string`   | No       | Optional help text displayed as tooltip. Supports [JavaScript expressions](./javascript-expressions.md) including `tr()`                    |
 
 #### Device-Specific Behavior
 
@@ -245,10 +246,10 @@ This behavior is device-specific and only applies to XENEON EDGE.
 iCUE injects script blocks into the widget's HTML page at runtime. These scripts provide:
 
 - **Global variables** for each meta parameter (e.g., `textColor`, `fontSize`)
-- **`iCUE` global object** with utility functions (see [iCUE Global Object](./references/icue-global-object.md))
+- **`iCUE` global object** with utility functions (see [iCUE Global Object](./icue-global-object.md))
 - **`iCUE_initialized`** flag indicating API readiness
-- **`device` object** with information about the device displaying the widget (see [Device Object](./references/device-object.md))
-- **Plugin objects** in `window.plugins` namespace [more info about plugins](./references/plugins/index.md)
+- **`device` object** with information about the device displaying the widget (see [Device Object](./device-object.md))
+- **Plugin objects** in `window.plugins` namespace [more info about plugins](./plugins/index.md)
 
 The injection occurs before the widget's own scripts execute, making all iCUE data immediately available.
 
@@ -305,5 +306,5 @@ if (pluginSensorsdataprovider_initialized) {
 ```
 
 :::info
-For detailed plugin documentation, see [Plugins](./references/plugins/index.md).
+For detailed plugin documentation, see [Plugins](./plugins/index.md).
 :::

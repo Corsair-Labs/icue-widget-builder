@@ -6,22 +6,25 @@ Media player data transfer between iCUE and HTML widgets: currently playing trac
 
 -   **Module name**: `widgetbuilder.mediadataprovider`
 -   **Plugin name**: `Media`
--   **Version**: `1.0`
+-   **Version**: `1.1`
 
 Manifest entry:
 
 ```json
 "required_plugins": [
-  "widgetbuilder.mediadataprovider:Media:1.0"
+  "widgetbuilder.mediadataprovider:Media:1.1"
 ]
 ```
 
 ## Properties
 
-| Property   | Type     | Description         |
-| ---------- | -------- | ------------------- |
-| `songName` | `string` | Current song name   |
-| `artist`   | `string` | Current artist name |
+| Property    | Type     | Description                                                              |
+| ----------- | -------- | ----------------------------------------------------------------------- |
+| `songName`  | `string` | Current song name                                                       |
+| `artist`    | `string` | Current artist name                                                     |
+| `album`     | `string` | Current album name                                                      |
+| `thumbnail` | `string` | Album art as a base64 PNG data URL (`data:image/png;base64,...`), or an empty string when unavailable |
+| `isPlaying` | `bool`   | `true` while media is playing, `false` when paused or stopped           |
 
 ## Methods
 
@@ -44,6 +47,36 @@ Gets the current artist name asynchronously.
 | `requestId` | `int` | Request ID for correlation |
 
 **Response**: `string`
+
+### `getAlbum(requestId)`
+
+Gets the current album name asynchronously.
+
+| Parameter   | Type  | Description                |
+| ----------- | ----- | -------------------------- |
+| `requestId` | `int` | Request ID for correlation |
+
+**Response**: `string`
+
+### `getThumbnail(requestId)`
+
+Gets the current album art asynchronously as a base64 PNG data URL. The value can be assigned directly to an `<img>` `src` or a CSS `background-image`. Returns an empty string when no album art is available.
+
+| Parameter   | Type  | Description                |
+| ----------- | ----- | -------------------------- |
+| `requestId` | `int` | Request ID for correlation |
+
+**Response**: `string`
+
+### `getIsPlaying(requestId)`
+
+Gets the current playback state asynchronously. Returns `true` while media is playing, `false` when paused or stopped.
+
+| Parameter   | Type  | Description                |
+| ----------- | ----- | -------------------------- |
+| `requestId` | `int` | Request ID for correlation |
+
+**Response**: `bool`
 
 ### `triggerPlayPause()`
 
@@ -68,6 +101,18 @@ Emitted when an async method completes.
 | `requestId` | `int` | Original request ID |
 | `value`     | `var` | Response value      |
 
+### Property change signals
+
+Emitted when the corresponding property changes. Connect to them to refresh the widget when the current track updates.
+
+| Signal              | Related property |
+| ------------------- | ---------------- |
+| `songNameChanged`   | `songName`       |
+| `artistChanged`     | `artist`         |
+| `albumChanged`      | `album`          |
+| `thumbnailChanged`  | `thumbnail`      |
+| `isPlayingChanged`  | `isPlaying`      |
+
 ## SimpleMediaApiWrapper
 
 Promise-based wrapper for the Media plugin. Converts the callback-based Qt async API into Promises.
@@ -91,13 +136,13 @@ const api = new SimpleMediaApiWrapper(window.plugins.Mediadataprovider);
 
 ### Methods
 
-#### `getSongName()`
-
-Returns `Promise<string>` with the current song name.
-
-#### `getArtist()`
-
-Returns `Promise<string>` with the current artist name.
+| Method            | Returns             | Description                                                       |
+| ----------------- | ------------------- | --------------------------------------------------------------- |
+| `getSongName()`   | `Promise<string>`   | Currently playing track title                                   |
+| `getArtist()`     | `Promise<string>`   | Currently playing artist name                                   |
+| `getAlbum()`      | `Promise<string>`   | Currently playing album name                                    |
+| `getThumbnail()`  | `Promise<string>`   | Album art as a base64 PNG data URL, or an empty string when unavailable |
+| `getIsPlaying()`  | `Promise<bool>`     | `true` while media is playing, `false` when paused or stopped   |
 
 ### Required local files
 
@@ -112,7 +157,7 @@ Returns `Promise<string>` with the current artist name.
 
 ```json
 "required_plugins": [
-  "widgetbuilder.mediadataprovider:Media:1.0"
+  "widgetbuilder.mediadataprovider:Media:1.1"
 ]
 ```
 
@@ -123,12 +168,32 @@ Returns `Promise<string>` with the current artist name.
 const mediaApi = new SimpleMediaApiWrapper(window.plugins.Mediadataprovider);
 
 async function displayCurrentTrack() {
-    const [songName, artist] = await Promise.all([
+    const [songName, artist, album, thumbnail] = await Promise.all([
         mediaApi.getSongName(),
         mediaApi.getArtist(),
+        mediaApi.getAlbum(),
+        mediaApi.getThumbnail(),
     ]);
-    console.log(`Now playing: ${songName} by ${artist}`);
+    console.log(`Now playing: ${songName} by ${artist} (${album})`);
+
+    // thumbnail is a base64 PNG data URL, usable directly as an image source
+    if (thumbnail) {
+        document.getElementById("albumArt").src = thumbnail;
+    }
 }
+
+// React to track changes via property change signals
+window.plugins.Mediadataprovider.songNameChanged.connect(displayCurrentTrack);
+window.plugins.Mediadataprovider.artistChanged.connect(displayCurrentTrack);
+window.plugins.Mediadataprovider.albumChanged.connect(displayCurrentTrack);
+window.plugins.Mediadataprovider.thumbnailChanged.connect(displayCurrentTrack);
+
+// Keep the play/pause button in sync with the real playback state
+function updatePlaybackState() {
+    const playing = window.plugins.Mediadataprovider.isPlaying;
+    document.getElementById("playPauseButton").textContent = playing ? "Pause" : "Play";
+}
+window.plugins.Mediadataprovider.isPlayingChanged.connect(updatePlaybackState);
 
 // Playback controls (synchronous — call directly on the plugin)
 window.plugins.Mediadataprovider.triggerPlayPause();

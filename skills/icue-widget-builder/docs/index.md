@@ -171,7 +171,7 @@ Create an `index.html` file with your widget's UI and logic:
 </html>
 ```
 
-_If your widget uses `tr()`, add a `translation.json` file in the widget root. More info in [Translations](./references/translations.md)_
+_If your widget uses `tr()`, add a `translation.json` file in the widget root. More info in [Translations](./translations.md)_
 
 ## Packaging Your Widget
 
@@ -210,8 +210,8 @@ iCUE widgets can run on devices with LCD displays:
 ## What's Next?
 
 - Learn about the [Widget Specification](./specification.md) for building widgets
-- Explore [Controls](./references/controls/index.md) for creating interactive settings in the iCUE settings panel
-- Discover the [iCUE Global Object](./references/icue-global-object.md) for utility functions and system information
-- Access [Device Information](./references/device-object.md) to identify the device displaying your widget
-- Use [Plugins](./references/plugins/index.md) to access system sensors, media playback, and more
-- Add [Translations](./references/translations.md) to support multiple languages
+- Explore [Controls](./controls/index.md) for creating interactive settings in the iCUE settings panel
+- Discover the [iCUE Global Object](./icue-global-object.md) for utility functions and system information
+- Access [Device Information](./device-object.md) to identify the device displaying your widget
+- Use [Plugins](./plugins/index.md) to access system sensors, media playback, and more
+- Add [Translations](./translations.md) to support multiple languages

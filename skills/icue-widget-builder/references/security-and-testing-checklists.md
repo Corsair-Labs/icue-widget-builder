@@ -16,10 +16,24 @@ Use this reference during verification and before final delivery.
 ### Data privacy
 
 - No network requests by default
+- Every external host the widget contacts is declared as a `url` entry in `manifest.json` `permissions` (and disclosed to the user); iCUE blocks undeclared hosts or asks the user at runtime
 - If external requests are required, send only the minimum data needed
 - Never send device identifiers, hardware details, file paths, localStorage contents, or personal data to third parties
 - Use HTTPS only
 - Explain outbound behavior to the user and get approval before testing an API
+
+### Permissions
+
+- the permission audit in `references/permissions.md` was run after the last code change, and its result is reported to the user
+- `permissions` contains only what the code uses — no leftover entries from removed features
+- prefer a specific `domain` (and `port`) over `"any"`; justify `"any"` explicitly (for example user-supplied endpoints)
+- `file` / `folder` paths are as narrow as possible and use `<Macro>` angle-bracket syntax; File System `watchPath()` paths use the same location with `{Macro}` curly braces and fall inside a declared permission
+- `localhost` `url` entries include the required `port`
+- hardware/privacy permissions (`microphone`, `camera`, `screen`, `clipboard_read_write`, `local_fonts_access`, `download`) are used only for a user-visible feature and disclosed
+- plugins that need a permission have it: Stream Deck → `{ "type": "application", "application": "Stream Deck" }`; File System → `file` / `folder`
+- no permission entries invented for plugins that document none (Sensors, Media, Link, FPS, Device Action, Notifications)
+- the user can grant or revoke permissions at any time: every `fetch` / `WebSocket` / file read / hardware call / gated plugin has a failure path that keeps last known data or shows a setup/offline hint, and recovers on its own when access returns
+- the final response lists each permission with scope and reason (or states that none are required)
 
 ### API keys and storage
 
@@ -69,6 +83,8 @@ Open the HTML file in a browser and test each supported target size.
 ### Documentation alignment
 
 - all generated meta tags exist in the docs/references
+- `manifest.json` `permissions` types and fields match `docs/permissions.md` exactly
+- plugin identifiers use the documented versions (`Media:1.1`, `StreamDeck:1.2`, …)
 - property types and attributes match the docs exactly
 - device identifiers match the docs exactly
 - plugin names/access patterns match the docs exactly
@@ -112,7 +128,7 @@ Open the HTML file in a browser and test each supported target size.
 
 ### User experience
 
-- loading/empty/error/content states are implemented
+- loading/empty/error/content states are implemented, including blocked/denied-permission access where the widget uses permissions
 - empty/error states guide the user toward a fix
 - content remains inside display bounds
 - layouts adapt to declared orientations/sizes

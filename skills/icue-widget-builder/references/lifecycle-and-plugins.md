@@ -87,7 +87,7 @@ bootCheck();
 
 ## Initial Browser Render
 
-**Superseded by the retry pattern above for any widget using a plugin (Sensors, Media, Link, StreamDeck, FPS, DeviceAction).** A one-shot check like the snippet below is the exact shape of the bug described above — do not use it as-is if the widget has any plugin dependency:
+**Superseded by the retry pattern above for any widget using a plugin (Sensors, Media, Link, StreamDeck, FPS, DeviceAction, FileSystem, Notifications).** A one-shot check like the snippet below is the exact shape of the bug described above — do not use it as-is if the widget has any plugin dependency:
 
 ```js
 // Only safe for widgets with NO plugin dependency, where an `onICUEInitialized` that
@@ -112,6 +112,27 @@ When using plugins, keep these names distinct:
 - wrapper/helper names used in examples
 
 Do not mix similar names unless the docs explicitly require them.
+
+| Manifest identifier | `window.plugins.*` | Init flag | Events map |
+|---|---|---|---|
+| `widgetbuilder.sensorsdataprovider:Sensors:1.0` | `Sensorsdataprovider` | `pluginSensorsdataprovider_initialized` | `pluginSensorsdataproviderEvents` |
+| `widgetbuilder.mediadataprovider:Media:1.1` | `Mediadataprovider` | `pluginMediadataprovider_initialized` | `pluginMediadataproviderEvents` |
+| `widgetbuilder.linkprovider:Url:1.0` | `Linkprovider` | `pluginLinkprovider_initialized` | `pluginLinkproviderEvents` |
+| `widgetbuilder.streamdeck:StreamDeck:1.2` | `Streamdeck` | `pluginStreamdeck_initialized` | `pluginStreamdeckEvents` |
+| `widgetbuilder.fpsdataprovider:Fps:1.0` | `Fpsdataprovider` | `pluginFpsdataprovider_initialized` | `pluginFpsdataproviderEvents` |
+| `widgetbuilder.deviceactionprovider:DeviceAction:1.0` | `Deviceactionprovider` | `pluginDeviceactionprovider_initialized` | `pluginDeviceactionproviderEvents` |
+| `widgetbuilder.filesystemprovider:FileSystem:1.0` | `Filesystemprovider` | `pluginFilesystemprovider_initialized` | `pluginFilesystemproviderEvents` |
+| `widgetbuilder.notificationsprovider:Notifications:1.0` | `Notificationsprovider` | `pluginNotificationsprovider_initialized` | `pluginNotificationsproviderEvents` |
+
+## Plugins and Permissions
+
+A plugin declaration in `required_plugins` does not by itself grant access to protected resources. Some plugins also need an entry in the manifest `permissions` array (full rules in `references/permissions.md` and `docs/permissions.md`):
+
+- **Stream Deck (`StreamDeck:1.2`)** — `{ "type": "application", "application": "Stream Deck" }`. The plugin verifies it before connecting to the Stream Deck app. If missing, iCUE asks the user at runtime and the plugin must not connect until approved; after a denial it disconnects, and after approval it retries.
+- **File System (`FileSystem:1.0`)** — a `file` permission to watch a file or a `folder` permission to watch a directory. Without the matching permission, `watchPath()` is silently blocked (no error, no `fileChanged` / `fileAdded` signals). `watchPath` uses `{Macro}` curly braces; the manifest `path` uses `<Macro>` angle brackets for the same location.
+- Sensors, Media, Link, FPS, Device Action, and Notifications have no documented permission requirement — do not add entries for them.
+
+Because the user can revoke permissions while the widget runs, plugin-driven UI needs a visible "not connected / not allowed" state that clears itself once signals resume. Never treat the first connect as permanent.
 
 ## Translation Runtime Notes
 
