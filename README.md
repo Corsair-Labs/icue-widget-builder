@@ -145,6 +145,12 @@ The skill is designed to ask clarifying questions first when the device type, da
 - `docs/` — iCUE technical documentation and control/plugin references, including `docs/permissions.md`.
 - `references/` — templates, implementation notes, lifecycle guidance, responsive scaling, widget metadata, `permissions.md` (feature-to-permission map and denied-permission handling), and validation checklists.
 
+## License
+
+The skill's original content (`SKILL.md`, `references/`, and this README) is licensed under the MIT License. See [LICENSE](LICENSE).
+
+`skills/icue-widget-builder/docs/` is **not** covered by the MIT License. It is a mirror of CORSAIR's iCUE documentation and remains subject to its upstream terms. The iCUE Widget CLI is a separate package and is licensed under Apache-2.0.
+
 ## Maintenance notes
 
 When updating the skill:
