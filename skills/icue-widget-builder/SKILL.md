@@ -427,6 +427,14 @@ Updating only one of them leaves the widget partially renamed.
 
 Writing `<meta charset="UTF-8">` or `<link rel="icon" ...>` without the trailing ` />` is valid HTML but invalid XML: the parser never closes the tag, fails at `</head>`, and iCUE rejects the widget with **"Missing Title Element"** even though `<title>` is present. `icuewidget validate` catches this. Void elements affected: `area`, `base`, `br`, `col`, `embed`, `hr`, `img`, `input`, `link`, `meta`, `param`, `source`, `track`, `wbr`.
 
+**More head rules (found on real widgets; checked by `icuewidget` 0.5.1-local).** iCUE parses everything up to `</head>` as strict XML, and any failure is reported as "Missing Title Element":
+
+- `<!DOCTYPE html>` in uppercase and no BOM. Attribute values are quoted, with no boolean attributes. Only `&amp; &lt; &gt; &quot; &apos;` and numeric entities are allowed (no `&nbsp;`), and comments contain no `--`.
+- **ASCII only up to `</head>`**, comments included: no em dashes, curly quotes or mojibake.
+- The head holds only meta/link tags, one `<title>` and the `x-icue-groups` JSON script. Put inline `<style>`/`<script>` in `<body>` or external files.
+- `<title>` is plain text identical to manifest `name`.
+- **No `<header>`/`</header>` and no literal `<head` text after `</head>`**, scripts included. iCUE mistakes it for the head boundary even when the head itself is valid. Use `<div class="header">`.
+
 If the `icuewidget` CLI is available, prefer:
 
 - `icuewidget init`
@@ -568,6 +576,7 @@ Before final output, run the **permission audit** in `references/permissions.md`
 Pay special attention to:
 
 - every void element in `<head>` is self-closed (`<meta ... />`, `<link ... />`) — otherwise iCUE import fails with "Missing Title Element"
+- `<head>` is ASCII-only with uppercase DOCTYPE, no inline style/script except x-icue-groups, a plain-text `<title>` equal to manifest `name`, and no `<header>` or `<head` text anywhere in the body
 - documented meta tags only
 - correct device IDs and property types
 - valid grouping JSON
