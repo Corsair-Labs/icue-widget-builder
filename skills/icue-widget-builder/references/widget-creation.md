@@ -48,10 +48,10 @@ A properly structured HTML widget contains four main sections:
 - **`<body>`** — The widget DOM. Contains any elements required for widget display.
 - **`<script>`** — All logic for how the widget operates. User-defined variables and iCUE-provided data variables are available here.
 
-Minimal head section:
+Minimal head section (`<title>` is evaluated as JavaScript, so quote it or use `tr('My Widget')`; bare `My Widget` throws a SyntaxError at runtime):
 ```html
 <head>
-    <title>My Widget</title>
+    <title>'My Widget'</title>
     <link rel="icon" type="image/x-icon" href="resources/icon.png" />
 </head>
 ```

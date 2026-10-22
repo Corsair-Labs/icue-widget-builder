@@ -92,6 +92,7 @@ Open the HTML file in a browser and test each supported target size.
 
 ### Structure
 
+- the file starts with uppercase `<!DOCTYPE html>`, not `<!doctype html>` (lowercase fails iCUE import, confirmed by test import 2026-10-21)
 - every void element in `<head>` is self-closed — `<meta ... />`, `<link ... />`, and any `br`/`hr`/`img`/`input`/`source` — because iCUE parses the head as XML and otherwise rejects the widget with "Missing Title Element"
 - `data-restrictions` uses JSON format
 - `x-icue-interactive` exists only when needed
@@ -123,7 +124,7 @@ Open the HTML file in a browser and test each supported target size.
 
 - every `tr('...')` key exists in `translation.json`
 - labels and state messages are covered consistently
-- `<title>` uses `tr('...')` (iCUE evaluates it — plain text produces `{}` in the settings panel)
+- `<title>` uses `tr('Name')` or the quoted literal `'Name'`, with `Name` equal to manifest `name` (iCUE evaluates it as JavaScript — bare text throws a ReferenceError or produces `{}` in the settings panel)
 - no `tr('...')` in `aria-label` or HTML body text — those render as literal strings
 
 ### User experience

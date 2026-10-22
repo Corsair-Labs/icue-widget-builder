@@ -413,7 +413,7 @@ Packaging safeguards:
 The widget display name shown in iCUE lives in **two separate places** - both must be updated when renaming:
 
 1. **`manifest.json`** - the `name` field - shown in the widget picker panel
-2. **`index.html`** - the `<title>` tag - shown in other iCUE surfaces
+2. **`index.html`** - the `<title>` tag - shown in other iCUE surfaces. Write it as `tr('Name')` or `'Name'`, never bare text (iCUE evaluates it as JavaScript)
 
 Updating only one of them leaves the widget partially renamed.
 
@@ -429,10 +429,10 @@ Writing `<meta charset="UTF-8">` or `<link rel="icon" ...>` without the trailing
 
 **More head rules (found on real widgets; checked by `icuewidget` 0.5.1-local).** iCUE parses everything up to `</head>` as strict XML, and any failure is reported as "Missing Title Element":
 
-- `<!DOCTYPE html>` in uppercase and no BOM. Attribute values are quoted, with no boolean attributes. Only `&amp; &lt; &gt; &quot; &apos;` and numeric entities are allowed (no `&nbsp;`), and comments contain no `--`.
+- `<!DOCTYPE html>` in uppercase and no BOM. Lowercase `<!doctype html>` (used in some official docs examples) does not import: confirmed by test import 2026-10-21 with two otherwise identical widgets, where only the uppercase one imported. `icuewidget validate` fails on it. Attribute values are quoted, with no boolean attributes. Only `&amp; &lt; &gt; &quot; &apos;` and numeric entities are allowed (no `&nbsp;`), and comments contain no `--`.
 - **ASCII only up to `</head>`**, comments included: no em dashes, curly quotes or mojibake.
 - The head holds only meta/link tags, one `<title>` and the `x-icue-groups` JSON script. Put inline `<style>`/`<script>` in `<body>` or external files.
-- `<title>` is plain text identical to manifest `name`.
+- `<title>` is evaluated by iCUE as a JavaScript expression, so it must be a string: `<title>tr('Name')</title>` (with a `translation.json` entry for `Name`) or the quoted literal `<title>'Name'</title>`, where `Name` matches manifest `name`. A bare unquoted title such as `<title>NetCurrent</title>` throws `ReferenceError: NetCurrent is not defined` (multi-word bare text is a SyntaxError). Bare titles do not block import, so `icuewidget validate` warns rather than fails.
 - **No `<header>`/`</header>` and no literal `<head` text after `</head>`**, scripts included. iCUE mistakes it for the head boundary even when the head itself is valid. Use `<div class="header">`.
 
 If the `icuewidget` CLI is available, prefer:
@@ -576,7 +576,7 @@ Before final output, run the **permission audit** in `references/permissions.md`
 Pay special attention to:
 
 - every void element in `<head>` is self-closed (`<meta ... />`, `<link ... />`) — otherwise iCUE import fails with "Missing Title Element"
-- `<head>` is ASCII-only with uppercase DOCTYPE, no inline style/script except x-icue-groups, a plain-text `<title>` equal to manifest `name`, and no `<header>` or `<head` text anywhere in the body
+- `<head>` is ASCII-only with uppercase `<!DOCTYPE html>` (lowercase fails import, confirmed by test import 2026-10-21), no inline style/script except x-icue-groups, a `<title>` that is `tr('Name')` or the quoted literal `'Name'` (never bare text) with `Name` equal to manifest `name`, and no `<header>` or `<head` text anywhere in the body
 - documented meta tags only
 - correct device IDs and property types
 - valid grouping JSON
