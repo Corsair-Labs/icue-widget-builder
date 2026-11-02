@@ -206,7 +206,7 @@ iCUE widgets can run on devices with LCD displays:
 | `dashboard_lcd`       | XENEON EDGE                                                                     |
 | `keyboard_lcd`        | VANGUARD 96, VANGUARD PRO 96                                                    |
 | `pump_lcd`            | iCUE LINK XC7/XD5 ELITE LCD (round screens)                                     |
-| `pump_dashboard_lcd`  | iCUE LINK 5 Inch LCD Screen Module / iCUE LINK TITAN II 360 RX LCD, NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD |
+| `pump_dashboard_lcd`  | iCUE LINK 5 Inch LCD Screen Module (iCUE LINK TITAN II 360 RX LCD), NAUTILUS II LCD (NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD) |
 
 Widget API v1.10.0+ (iCUE v5.54+) adds `pump_dashboard_lcd` for the 5 inch LCD Screen Module and NAUTILUS II LCD screens. New widgets targeting these devices must declare `pump_dashboard_lcd`.
 

@@ -29,7 +29,7 @@ If older skill guidance, templates, or local references conflict with the update
 
 The bundled `docs/` track **Widget API 1.10.0 / iCUE 5.54** (QtWebEngine 6.9.3, Chromium 130). Features from this release — manifest `permissions`, File System Provider, Notifications Provider, Stream Deck Provider 1.2 with the `stream-deck-virtual-device` control, Media Provider 1.1, and the `pump_dashboard_lcd` device type — need a matching iCUE version. When a widget uses them, set `min_app_version` / `min_framework_version` to values the docs support and tell the user the minimum iCUE version they imply.
 
-`pump_dashboard_lcd` (Widget API 1.10.0+ / iCUE 5.54+) targets the 5" LCD Screen Module and NAUTILUS II RS-style rectangular pump screens. The legacy `dashboard_lcd` entry still works for these devices for backward compatibility (only when that entry does not require `sensor-screen`), but that compatibility will be removed in a future version — use `pump_dashboard_lcd` for all new widgets targeting these screens. `pump_lcd` now covers only the round pump screens (iCUE LINK XC7/XD5 ELITE LCD and legacy round AIOs). The `sensor-screen` device feature now means "device must support touchscreen input" (previously "device supports sensor data display"); neither pump screen type supports it. See `docs/specification.md#pump-dashboard-displays` for the full compatibility rules.
+`pump_dashboard_lcd` (Widget API 1.10.0+ / iCUE 5.54+) targets the 5" LCD Screen Module (iCUE LINK TITAN II 360 RX LCD) and NAUTILUS II LCD (NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD) rectangular pump screens. The legacy `dashboard_lcd` entry still works for these devices for backward compatibility (only when that entry does not require `sensor-screen`), but that compatibility will be removed in a future version — use `pump_dashboard_lcd` for all new widgets targeting these screens. `pump_lcd` now covers only the round pump screens (iCUE LINK XC7/XD5 ELITE LCD and legacy round AIOs). The `sensor-screen` device feature now means "device must support touchscreen input" (previously "device supports sensor data display"); neither pump screen type supports it. See `docs/specification.md#pump-dashboard-displays` for the full compatibility rules.
 
 Do not invent unsupported meta properties, undocumented package layouts, or internal installation-path assumptions.
 
@@ -56,6 +56,7 @@ For a **new widget** or a **major redesign**, ask about ALL of the following:
        - **Smaller Rectangular Screens**: NAUTILUS II RS LCD or iCUE LINK TITAN II ULTRA 360 LX LCD — resolutions: 616×224, 616×456, 456×616, 456×304
        - For an iCUE version that predates 5.54, fall back to a `dashboard_lcd` entry without `sensor-screen` instead (legacy compatibility — being removed in a future release; tell the user this is a stopgap, not the recommended path)
      - **Universal / All pump screens**: Support all of the above via responsive aspect-ratio breakpoints, declaring both `pump_lcd` and `pump_dashboard_lcd` in `supported_devices`
+   - **If `pump_dashboard_lcd` is declared, set `min_framework_version` to `1.10.0` or later and `min_app_version` to `5.54` or later in `manifest.json`** — otherwise the widget will not import or will be rejected on older iCUE builds.
 3. **Update interval** — How often should data refresh? What should happen when the widget is offline or the data source is unavailable?
 4. **Customization** — What should be configurable by the user in iCUE settings? Suggest sensible defaults but confirm.
 5. **Visual style** — Any specific look, theme, or inspiration? Minimalist, detailed, playful, etc.?
@@ -121,8 +122,9 @@ When the user asks to add pump LCD support to an existing widget:
    - **Smaller Rectangular Screens**: NAUTILUS II RS LCD or iCUE LINK TITAN II ULTRA 360 LX LCD — resolutions: 616×224, 616×456, 456×616, 456×304 — `pump_dashboard_lcd`
    - **Universal / All pump screens**: Support all of the above via responsive aspect-ratio breakpoints, declaring both `pump_lcd` and `pump_dashboard_lcd`
 2. Ensure `{ "type": "pump_lcd" }` (round screens) and/or `{ "type": "pump_dashboard_lcd" }` (rectangular screens, Widget API 1.10.0+ / iCUE 5.54+) are declared in `manifest.json` under `supported_devices`, matching the screens selected above.
-3. Check existing properties, styling, and DOM structure to ensure hero metrics and layout elements scale gracefully across the selected pump aspect ratios.
-4. Implement responsive layout and CSS media queries tailored to the selected screens (see Section 2.3 for specific screen UI guidelines).
+3. **If `pump_dashboard_lcd` is added, bump `min_framework_version` to `1.10.0` or later and `min_app_version` to `5.54` or later** in the same edit — do not leave them at whatever the widget already had.
+4. Check existing properties, styling, and DOM structure to ensure hero metrics and layout elements scale gracefully across the selected pump aspect ratios.
+5. Implement responsive layout and CSS media queries tailored to the selected screens (see Section 2.3 for specific screen UI guidelines).
 
 ## Phase 2: Research & Design
 
@@ -432,7 +434,7 @@ Updating only one of them leaves the widget partially renamed.
 
 Writing `<meta charset="UTF-8">` or `<link rel="icon" ...>` without the trailing ` />` is valid HTML but invalid XML: the parser never closes the tag, fails at `</head>`, and iCUE rejects the widget with **"Missing Title Element"** even though `<title>` is present. `icuewidget validate` catches this. Void elements affected: `area`, `base`, `br`, `col`, `embed`, `hr`, `img`, `input`, `link`, `meta`, `param`, `source`, `track`, `wbr`.
 
-**More head rules (found on real widgets; checked by `icuewidget` 0.5.1-local).** iCUE parses everything up to `</head>` as strict XML, and any failure is reported as "Missing Title Element":
+**More head rules (found on real widgets; checked by `icuewidget` 0.5.2+).** iCUE parses everything up to `</head>` as strict XML, and any failure is reported as "Missing Title Element":
 
 - `<!DOCTYPE html>` in uppercase and no BOM. Lowercase `<!doctype html>` (used in some official docs examples) does not import: confirmed by test import 2026-10-21 with two otherwise identical widgets, where only the uppercase one imported. `icuewidget validate` fails on it. Attribute values are quoted, with no boolean attributes. Only `&amp; &lt; &gt; &quot; &apos;` and numeric entities are allowed (no `&nbsp;`), and comments contain no `--`.
 - **ASCII only up to `</head>`**, comments included: no em dashes, curly quotes or mojibake.

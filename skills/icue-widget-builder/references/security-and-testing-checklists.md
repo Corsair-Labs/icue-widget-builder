@@ -57,9 +57,12 @@ Open the HTML file in a browser and test each supported target size.
 | Large | 1688x696 | 696x1688 |
 | Extra Large | 2536x696 | 696x2536 |
 
-**Pump LCD (`pump_lcd`)**
+**Pump LCD — round screens (`pump_lcd`)**
 
 - Round Screens (All round screens, circular): 480×480
+
+**Pump Dashboard LCD — rectangular screens (`pump_dashboard_lcd`, Widget API 1.10.0+ / iCUE 5.54+)**
+
 - Smaller Rectangular (NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD): 616×224, 616×456, 456×616, 456×304
 - 5" Large Rectangular (iCUE LINK TITAN II 360 RX LCD / iCUE LINK 5" LCD Screen Module): 696×308, 696×624, 696×1256, 624×344, 624×696, 1256×696
 
