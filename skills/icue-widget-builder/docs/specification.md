@@ -131,16 +131,6 @@ The `supported_devices` array specifies compatible device types and optional fea
 | `pump_lcd`           | AIO cooler pumps with LCD screens     | iCUE LINK XC7 ELITE LCD, iCUE LINK XD5 ELITE LCD                                |
 | `pump_dashboard_lcd` | Pump dashboard displays               | iCUE LINK 5 Inch LCD Screen Module (iCUE LINK TITAN II 360 RX LCD), NAUTILUS II LCD (NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD) |
 
-#### Pump Dashboard Displays
-
-Starting with Widget API v1.10.0 in iCUE v5.54+, `pump_dashboard_lcd` targets the 5 inch LCD Screen Module (iCUE LINK TITAN II 360 RX LCD) and NAUTILUS II LCD (NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD) only. New widgets targeting these devices must declare `pump_dashboard_lcd` in `supported_devices` and set `min_framework_version` to `1.10.0` or later. Neither device supports the `sensor-screen` (touchscreen input) feature. Declaring `pump_lcd` alone does not target these devices.
-
-:::note Backward compatibility
-For backward compatibility, both `pump_dashboard_lcd` and the legacy `dashboard_lcd` type currently work for these devices. Existing `dashboard_lcd` widgets remain available only when that entry does not require `sensor-screen`. This legacy `dashboard_lcd` compatibility will be removed in future versions; new widgets must use `pump_dashboard_lcd`.
-
-Feature requirements are evaluated independently for each entry. During this compatibility period, a separate `pump_dashboard_lcd` entry without `sensor-screen` makes a widget available on these devices even if its `dashboard_lcd` entry requires `sensor-screen`.
-:::
-
 #### Device Features
 
 Optional `features` array restricts widget to devices with specific capabilities.
