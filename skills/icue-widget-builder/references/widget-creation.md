@@ -137,7 +137,8 @@ Only declare what the widget uses, prefer a specific `domain`/`path` over `"any"
 | Device | `type` value | Description |
 |--------|-------------|-------------|
 | Xeneon Edge | `dashboard_lcd` | Dashboard LCD with touch support |
-| Pump LCD | `pump_lcd` | AIO cooler pump LCD: all round screens (480×480, XC7/XD5 ELITE LCD), smaller rectangular screens (NAUTILUS II RS LCD, iCUE LINK TITAN II ULTRA 360 LX LCD), 5" rectangular screens (iCUE LINK TITAN II 360 RX LCD / iCUE LINK 5" LCD Screen Module) |
+| Pump LCD | `pump_lcd` | AIO cooler pump LCD, round screens only (480×480, legacy round / XC7/XD5 ELITE LCD) |
+| Pump Dashboard LCD | `pump_dashboard_lcd` | AIO cooler pump LCD, rectangular screens (Widget API 1.10.0+ / iCUE 5.54+): smaller rectangular screens (NAUTILUS II RS LCD, iCUE LINK TITAN II ULTRA 360 LX LCD), 5" rectangular screens (iCUE LINK TITAN II 360 RX LCD / iCUE LINK 5" LCD Screen Module). The legacy `dashboard_lcd` type still works for these devices for backward compatibility (only when it doesn't require `sensor-screen`); that fallback is being removed in a future release, so new widgets must declare `pump_dashboard_lcd` |
 | Keyboard | `keyboard_lcd` | Keyboard with LCD |
 
 ### Device Features

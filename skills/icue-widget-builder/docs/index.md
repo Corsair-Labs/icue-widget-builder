@@ -201,11 +201,12 @@ To install your widget in iCUE:
 
 iCUE widgets can run on devices with LCD displays:
 
-| Device Type     | Examples                                                                                      |
-| --------------- | --------------------------------------------------------------------------------------------- |
-| `dashboard_lcd` | XENEON EDGE                                                                                   |
-| `keyboard_lcd`  | VANGUARD 96, VANGUARD PRO 96                                                                  |
-| `pump_lcd`      | All round screens (iCUE LINK XC7/XD5 ELITE LCD), smaller rectangular screens (NAUTILUS II RS LCD, iCUE LINK TITAN II ULTRA 360 LX LCD), 5" rectangular screens (iCUE LINK TITAN II 360 RX LCD, iCUE LINK 5 Inch LCD Screen Module) |
+| Device Type          | Examples                                                                        |
+| -------------------- | -------------------------------------------------------------------------------- |
+| `dashboard_lcd`       | XENEON EDGE                                                                     |
+| `keyboard_lcd`        | VANGUARD 96, VANGUARD PRO 96                                                    |
+| `pump_lcd`            | iCUE LINK XC7/XD5 ELITE LCD (round screens)                                     |
+| `pump_dashboard_lcd`  | iCUE LINK 5 Inch LCD Screen Module (iCUE LINK TITAN II 360 RX LCD), NAUTILUS II LCD (NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD) |
 
 ## What's Next?
 
