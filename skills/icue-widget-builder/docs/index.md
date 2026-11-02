@@ -201,11 +201,18 @@ To install your widget in iCUE:
 
 iCUE widgets can run on devices with LCD displays:
 
-| Device Type     | Examples                                                                                      |
-| --------------- | --------------------------------------------------------------------------------------------- |
-| `dashboard_lcd` | XENEON EDGE                                                                                   |
-| `keyboard_lcd`  | VANGUARD 96, VANGUARD PRO 96                                                                  |
-| `pump_lcd`      | All round screens (iCUE LINK XC7/XD5 ELITE LCD), smaller rectangular screens (NAUTILUS II RS LCD, iCUE LINK TITAN II ULTRA 360 LX LCD), 5" rectangular screens (iCUE LINK TITAN II 360 RX LCD, iCUE LINK 5 Inch LCD Screen Module) |
+| Device Type          | Examples                                                                        |
+| -------------------- | -------------------------------------------------------------------------------- |
+| `dashboard_lcd`       | XENEON EDGE                                                                     |
+| `keyboard_lcd`        | VANGUARD 96, VANGUARD PRO 96                                                    |
+| `pump_lcd`            | iCUE LINK XC7/XD5 ELITE LCD (round screens)                                     |
+| `pump_dashboard_lcd`  | iCUE LINK 5 Inch LCD Screen Module / iCUE LINK TITAN II 360 RX LCD, NAUTILUS II RS LCD / iCUE LINK TITAN II ULTRA 360 LX LCD |
+
+Widget API v1.10.0+ (iCUE v5.54+) adds `pump_dashboard_lcd` for the 5 inch LCD Screen Module and NAUTILUS II LCD screens. New widgets targeting these devices must declare `pump_dashboard_lcd`.
+
+:::note Backward compatibility
+Both `pump_dashboard_lcd` and the legacy `dashboard_lcd` type currently work for these devices for backward compatibility. This `dashboard_lcd` compatibility will be removed in future versions; use `pump_dashboard_lcd` for all new widgets. See [Pump Dashboard Displays](./specification.md#pump-dashboard-displays) for details.
+:::
 
 ## What's Next?
 
